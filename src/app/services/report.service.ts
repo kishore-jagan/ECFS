@@ -68,6 +68,7 @@ export interface AwsReportData {
   long_rad_tc: number;
   gps_lat: number;
   gps_lon: number;
+  [key: string]: string | number | undefined;
 }
 
 export interface sensors {
