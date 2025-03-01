@@ -1,434 +1,315 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import Feature from 'ol/Feature';
-import { Point, Circle as circleGeom } from 'ol/geom';
-import { Circle } from 'ol/geom';
-import TileLayer from 'ol/layer/Tile';
-import VectorLayer from 'ol/layer/Vector';
-import Map from 'ol/Map';
-import { fromLonLat } from 'ol/proj';
-import { XYZ } from 'ol/source';
-import VectorSource from 'ol/source/Vector';
-import Fill from 'ol/style/Fill';
-import Icon from 'ol/style/Icon';
-import Stroke from 'ol/style/Stroke';
-import Style from 'ol/style/Style';
-import View from 'ol/View';
-import Text from 'ol/style/Text';
-import { DataService } from '../services/data.service';
-import { response } from 'express';
-import { error } from 'console';
-import { AwsData, EcfsData } from '../models/ecfs_model';
 
-import { BatteryComponent } from '../battery/battery.component';
-import { interval, Subscription } from 'rxjs';
-import { DatePipe } from '@angular/common';
-interface listModel {
-  name: string;
-  value: string;
-  img: string;
-}
+import * as echarts from 'echarts';
+import {
+  EcfsReportData,
+  ReportService,
+  sensors,
+} from '../services/report.service';
+import { EcfsData } from '../models/ecfs_model';
+import { DataService } from '../services/service.service';
+
 @Component({
   selector: 'app-analytics',
   standalone: true,
-  imports: [FormsModule, CommonModule, BatteryComponent],
+  imports: [FormsModule, CommonModule],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.css',
-  providers: [DatePipe],
+  providers: [],
 })
 export class AnalyticsComponent implements OnInit {
-  private platformId = inject(PLATFORM_ID);
-  private dataService = inject(DataService);
-  isBrowser: boolean = false;
+  selectedStation: string = 'ECFS';
 
-  sensorList: string[] = ['ECFS', 'AWS'];
-  sensorSelect: string = this.sensorList[0];
+  ecfs: EcfsData[] = [];
 
-  isECFSSelected: boolean = true;
-
-  ecfsdata: EcfsData[] = [];
-  ecfslastRow?: EcfsData;
-
-  awsdata: AwsData[] = [];
-  awslastRow?: AwsData;
-
-  ecfslist: listModel[] = [];
-  awsList: listModel[] = [];
-
-  battery: number = 10;
-
-  constructor() {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
-
-  map!: Map;
-  latLong: [number, number] = fromLonLat([80.482814, 13.031254]) as [
-    number,
-    number
+  selectedChart: string = 'line';
+  chartOptions = [
+    { label: 'Line Plot', value: 'line' },
+    // { label: 'Scatter Series', value: 'scatter' },
+    { label: 'Bar Plot', value: 'bar' },
+    { label: 'Polar plot', value: 'currentSpeed' },
   ];
-  vectorLayer!: VectorLayer;
+  loading: boolean = false;
 
-  toggleSensor() {
-    this.sensorSelect = this.isECFSSelected ? 'ECFS' : 'AWS';
-  }
-  ngOnInit(): void {
-    this.mapInit();
-    this.getEcfsData();
-    this.getAwsData();
-  }
+  constructor(
+    private analyticsService: ReportService,
+    private ser: DataService
+  ) {}
 
-  assignecfslist() {
-    const list = [
-      {
-        name: 'co2_molar_li',
-        value: this.ecfslastRow!.co2_molar_li.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'H2O_molar_li',
-        value: this.ecfslastRow!.h2o_molar_li.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'CO2_Ab_li',
-        value: this.ecfslastRow!.co2_ab_li.toString(),
-        img: '../../assets/svg/admin_setting.svg',
-      },
-      {
-        name: 'H2O_Ab_li',
-        value: this.ecfslastRow!.h2o_ab_li.toString(),
-        img: '../../assets/svg/level.svg',
-      },
-      {
-        name: 'Press_li',
-        value: this.ecfslastRow!.press_li.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Temperature_li',
-        value: this.ecfslastRow!.temp_li.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Aux_li',
-        value: this.ecfslastRow!.aux_li.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Ux',
-        value: this.ecfslastRow!.ux.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Uy',
-        value: this.ecfslastRow!.uy.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Uz',
-        value: this.ecfslastRow!.uz.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'TS',
-        value: this.ecfslastRow!.ts.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'XAccel',
-        value: this.ecfslastRow!.x_accel.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'YAccel',
-        value: this.ecfslastRow!.y_accel.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'ZAccel',
-        value: this.ecfslastRow!.z_accel.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'XGyro',
-        value: this.ecfslastRow!.x_gyro.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'YGyro',
-        value: this.ecfslastRow!.y_gyro.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'ZGyro',
-        value: this.ecfslastRow!.z_gyro.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'XMag',
-        value: this.ecfslastRow!.x_mag.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'YMag',
-        value: this.ecfslastRow!.y_mag.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'ZMag',
-        value: this.ecfslastRow!.z_mag.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Ambient Pressure',
-        value: this.ecfslastRow!.ambient_pressure.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Roll',
-        value: this.ecfslastRow!.roll.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Pitch',
-        value: this.ecfslastRow!.pitch.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'Yaw',
-        value: this.ecfslastRow!.yaw.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-      {
-        name: 'IMU',
-        value: this.ecfslastRow!.imu_timestamp_flags.toString(),
-        img: '../../assets/svg/leaf.svg',
-      },
-    ];
+  selectStationoption(type: string) {
+    this.selectedStation = type;
 
-    console.log('ecfs list', list);
-    this.ecfslist = list;
-  }
-
-  assignawsList() {
-    const list = [
-      {
-        name: 'Winddir_uc',
-        value: this.awslastRow!.winddir_uc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Ws',
-        value: this.awslastRow!.ws.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Winddir_cc',
-        value: this.awslastRow!.winddir_cc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Ws_cc',
-        value: this.awslastRow!.ws_cc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Bp',
-        value: this.awslastRow!.bp.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Rh',
-        value: this.awslastRow!.rh.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Airtemp',
-        value: this.awslastRow!.airtemp.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'dp',
-        value: this.awslastRow!.dp.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Metsens_volts',
-        value: this.awslastRow!.metsens_volts.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Metsons_status',
-        value: this.awslastRow!.metsens_status.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Rain_mm',
-        value: this.awslastRow!.rain_mm.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Sbtempc',
-        value: this.awslastRow!.sbtempc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Targtempc',
-        value: this.awslastRow!.targtempc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Pyr1_w_irr_tc',
-        value: this.awslastRow!.pyr1_w_irr_tc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Pyr1_w_bodytemp',
-        value: this.awslastRow!.pyr1_w_bodytemp.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Pyr2_w_irr_tc',
-        value: this.awslastRow!.pyr2_w_irr_tc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Pyr2_w_bodytemp',
-        value: this.awslastRow!.pyr2_w_bodytemp.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Long_rad_tc',
-        value: this.awslastRow!.long_rad_tc.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Gps_lat',
-        value: this.awslastRow!.gps_lat.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-      {
-        name: 'Gps_lon',
-        value: this.awslastRow!.gps_lon.toString(),
-        img: '../../assets/svg/meter.svg',
-      },
-    ];
-    console.log('awslist', list);
-    this.awsList = list;
-  }
-
-  getEcfsData() {
-    this.dataService.getEcfsData().subscribe(
-      (response: EcfsData[]) => {
-        this.ecfsdata = response;
-        console.log('All ecfs data', this.ecfsdata);
-
-        if (this.ecfsdata.length > 0) {
-          this.ecfslastRow = this.ecfsdata[this.ecfsdata.length - 1];
-          if (this.ecfslastRow) {
-            this.assignecfslist();
-            console.log('ecfs has data');
-          }
-        }
-        console.log('ecfs Last row data:', this.ecfslastRow);
-      },
-      (error) => {
-        console.error('error:', error);
-      }
-    );
-  }
-
-  getAwsData() {
-    this.dataService.getAwsData().subscribe(
-      (response: AwsData[]) => {
-        this.awsdata = response;
-        console.log('All Aws data', this.awsdata);
-
-        if (this.awsdata.length > 0) {
-          this.awslastRow = this.awsdata[this.awsdata.length - 1];
-          if (this.awslastRow) {
-            this.assignawsList();
-            console.log('aws has data');
-          }
-        }
-        console.log('last awsrowdata', this.awslastRow);
-      },
-      (error) => {
-        console.error('error', error);
-      }
-    );
-  }
-
-  mapInit(): void {
-    if (!this.isBrowser) return;
-    const mapContainer = document.getElementById('map1');
-
-    if (!mapContainer) {
-      console.error('Map not Found');
-      return;
+    if (this.selectedStation == 'ECFS') {
+    } else if (this.selectedStation == 'AWS') {
     }
+  }
 
-    const iconFeature = new Feature({
-      geometry: new Point(this.latLong),
+  ngOnInit(): void {
+    this.getSensordata();
+  }
+
+  // getSensordata() {
+  //   this.analyticsService.getSensors().subscribe((data: sensors) => {
+  //     this.ecfs = data.ecfs;
+  //     console.log('ECFS data', this.ecfs);
+  //   });
+  // }
+
+  getSensordata() {
+    this.ser.getEcfsData().subscribe((data: EcfsData[]) => {
+      this.ecfs = data;
+      console.log('ECFS data', this.ecfs);
+      this.Tide();
     });
+  }
 
-    // const circleFeature = new Feature({
-    //   geometry: new circleGeom(this.latLong, 40000),
-    // });
+  realTimeH2OData = [
+    ['2025-02-18', 18.6],
+    ['2025-02-19', 19.2],
+    ['2025-02-20', 20.1],
+    ['2025-02-21', 21.4],
+    ['2025-02-22', 19.8],
+    ['2025-02-23', 18.9],
+    ['2025-02-24', 20.5],
+    ['2025-02-25', 22.3],
+    ['2025-02-26', 21.8],
+    ['2025-02-27', 19.7],
+    ['2025-02-28', 20.2],
+    ['2025-02-29', 18.4],
+    ['2025-03-01', 19.9],
+    ['2025-03-02', 20.7],
+    ['2025-03-03', 22.0],
+    ['2025-03-04', 21.1],
+    ['2025-03-05', 19.3],
+    ['2025-03-06', 20.8],
+    ['2025-03-07', 18.6],
+    ['2025-03-08', 19.5],
+    ['2025-03-09', 21.7],
+    ['2025-03-10', 22.4],
+    ['2025-03-11', 20.9],
+    ['2025-03-12', 19.1],
+    ['2025-03-13', 18.8],
+    ['2025-03-14', 20.3],
+    ['2025-03-15', 21.5],
+    ['2025-03-16', 22.1],
+    ['2025-03-17', 20.6],
+    ['2025-03-18', 19.0],
+  ];
+  Tide(): void {
+    const chartType = this.selectedChart;
+    this.loading = true;
+    const tide = document.getElementById('tide');
 
-    iconFeature.setStyle(
-      new Style({
-        image: new Icon({
-          // src: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-          src: '../../assets/Sagar_Nidhi.png',
-          scale: 0.2,
-        }),
-        text: new Text({
-          // text: 'Bouy 1',
-          font: '12px Arial, sans-serif', // Font style
-          fill: new Fill({ color: '#000' }), // Text color
-          stroke: new Stroke({ color: '#fff', width: 2 }), // Outline for better visibility
-          offsetY: -20, // Offset the text above the icon
-        }),
-      })
-    );
+    const computedStyle = getComputedStyle(document.body);
+    const bgColor = computedStyle
+      .getPropertyValue('--secbackground-color')
+      .trim();
+    const mainText = computedStyle.getPropertyValue('--chart-maintext').trim();
+    const subText = computedStyle.getPropertyValue('--main-text').trim();
 
-    // circleFeature.setStyle(
-    //   new Style({
-    //     fill: new Fill({ color: '#fff' }),
-    //     stroke: new Stroke({ color: '#000', width: 2 }),
-    //   })
-    // );
-
-    const vectorSource = new VectorSource({
-      features: [iconFeature],
-    });
-
-    const vectorLayer = new VectorLayer({
-      source: vectorSource,
-      style: new Style({
-        fill: new Fill({ color: 'rgba(0, 149, 255, 0.5)' }), // Custom water color
+    const chartData = this.ecfs.map((item) => [
+      new Date(item.timestamp).toLocaleString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        fractionalSecondDigits: 3, // Ensures milliseconds are shown
       }),
-    });
+      item.co2_molar_li,
+    ]);
 
-    this.map = new Map({
-      target: 'map1',
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            // url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-            // url: 'https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-            // url: 'https://{a-c}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-          }),
-        }),
-        vectorLayer,
-      ],
-      view: new View({
-        center: this.latLong,
-        zoom: 5,
-      }),
-    });
+    console.log('chart', chartData);
+
+    if (tide) {
+      const existingInstance = echarts.getInstanceByDom(tide);
+      if (existingInstance) {
+        existingInstance.dispose();
+      }
+      const tideLevel = echarts.init(tide);
+
+      // const waterLevels =
+      //   this.selectedStation === 'cwprs01'
+      //     ? this.cwprs01.map((item) => item.S1_RelativeWaterLevel)
+      //     : this.selectedStation === 'cwprs02'
+      //     ? this.cwprs02.map((item) => item.S1_RelativeWaterLevel)
+      //     : [];
+
+      // const dates =
+      //   this.selectedStation === 'cwprs01'
+      //     ? this.cwprs01.map(
+      //         (item) =>
+      //           `${item.Date?.split('T')[0]} ${
+      //             item.Time?.split('T')[1]?.split('.')[0]
+      //           }`
+      //       )
+      //     : this.selectedStation === 'cwprs02'
+      //     ? this.cwprs02.map(
+      //         (item) =>
+      //           `${item.Date?.split('T')[0]} ${
+      //             item.Time?.split('T')[1]?.split('.')[0]
+      //           }`
+      //       )
+      //     : [];
+
+      //Without model and fetch with date and time
+
+      // const dates = this.cwprs01.map(item =>`${item.Date?.split('T')[0]}`);
+      //Without model and fetch with date only
+
+      // Retrieve theme variables
+
+      const option = {
+        title: {
+          text: 'H20 Molar',
+          left: '1%',
+          textStyle: {
+            color: mainText,
+            fontSize: 20,
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+        },
+        grid: {
+          // top: '50%',
+          left: '7%',
+          // right: '10%',
+          bottom: '30%',
+          // containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          name: 'Date', // X-axis legend (title)
+          nameLocation: 'middle',
+          // data: chartData.map((d) => d[0]),
+          nameTextStyle: {
+            color: mainText,
+            padding: [35, 0, 0, 0],
+            fontSize: 16,
+          },
+          // data: dates,
+          axisLabel: {
+            color: subText, // Set x-axis label color to white
+            rotate: 45,
+          },
+          axisLine: {
+            show: true,
+          },
+          splitLine: {
+            show: false, // Hide x-axis grid lines
+          },
+        },
+
+        yAxis: {
+          name: `h20`, // Y-axis legend (title)
+          nameLocation: 'middle',
+          // data: chartData.map((d) => d[1]),
+          nameTextStyle: {
+            color: mainText,
+            padding: [0, 0, 30, 0],
+            fontSize: 16,
+          },
+          // type: 'value'
+          axisLabel: {
+            color: subText, // Set y-axis label color to white
+          },
+          axisLine: {
+            show: true,
+          },
+          splitLine: {
+            show: true, // Hide x-axis grid lines
+            lineStyle: {
+              color: subText,
+              type: 'dashed',
+            },
+          },
+        },
+
+        legend: {
+          // type: 'scroll',
+          orient: 'vertical', // Orient the legend vertically
+          right: '15%',
+          top: '2%',
+          // top: 'middle',
+          textStyle: {
+            color: subText, // Set legend text color to white
+            fontSize: 14,
+          },
+        },
+
+        toolbox: {
+          // right: 10,
+          feature: {
+            dataZoom: {
+              yAxisIndex: 'none',
+              title: {
+                zoom: 'Zoom',
+                back: 'Reset Zoom',
+              },
+            },
+            restore: {},
+            saveAsImage: {
+              backgroundColor: bgColor,
+              pixelRatio: 2,
+            },
+          },
+          iconStyle: {
+            borderColor: mainText,
+          },
+        },
+
+        dataZoom: [
+          {
+            type: 'slider',
+            // bottom: 15,
+            height: 20,
+            start: 0, // You can adjust to define how much of the chart is visible initially
+            end: 100, // Set the percentage of the range initially visible
+          },
+          {
+            type: 'inside',
+            start: 0,
+            end: 100, // Can be modified based on your dataset's initial view preference
+            zoomOnMouseWheel: true,
+            moveOnMouseMove: true,
+          },
+        ],
+
+        series: [
+          {
+            name: 'h2o',
+            // data: dates.map((date, index) => ({
+            //   value: [date, waterLevels[index]],
+            // })),
+            // data: this.sampleDataTide.map(item => [item.date, item.level]),
+            data: chartData.map((item) => [item[0], item[1]]),
+            type: chartType === 'bar' ? 'bar' : chartType,
+            smooth: chartType === 'line',
+            lineStyle:
+              chartType === 'line' ? { color: '#1ee1ff' } : { color: 'orange' },
+            barWidth: chartType === 'bar' ? '50%' : undefined,
+
+            itemStyle: {
+              color: '#1ee1ff',
+            },
+            showSymbol: false,
+            label: {
+              show: false,
+              fontSize: 12, // Optional: Set font size for the data points (if labels are enabled)
+            },
+          },
+        ],
+      };
+
+      // Set options for the chart
+      tideLevel.setOption(option);
+      this.loading = false;
+      window.addEventListener('resize', () => {
+        tideLevel.resize();
+      });
+    } else {
+      this.loading = false;
+    }
   }
 }

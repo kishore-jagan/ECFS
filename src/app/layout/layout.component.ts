@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HomePageComponent } from '../home-page/home-page.component';
 import { DashboardComponent } from '../dashboard/dashboard.component';
 import { AnalyticsComponent } from '../analytics/analytics.component';
+import { ReportsComponent } from '../reports/reports.component';
 
 @Component({
   selector: 'app-layout',
@@ -14,6 +15,7 @@ import { AnalyticsComponent } from '../analytics/analytics.component';
     HomePageComponent,
     DashboardComponent,
     AnalyticsComponent,
+    ReportsComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
