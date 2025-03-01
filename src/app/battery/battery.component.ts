@@ -9,7 +9,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrl: './battery.component.css',
 })
 export class BatteryComponent implements OnInit {
-  @Input() batteryLevel: number = 6.4;
+  @Input() batteryLevel: number = 12;
   public batteryColor: string = 'green';
   public fillHeight: string = '0%';
 

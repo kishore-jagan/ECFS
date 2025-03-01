@@ -17,7 +17,39 @@
   font-size: 14px;
 }
 
-.popup-content {
-  text-align: center;
-  font-weight: bold;
+.popup-container {
+  position: absolute;
+  background: white;
+  padding: 5px;
+  color: black !important;
+  border-radius: 5px;
+  border: 1px solid black;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  transform: translate(-50%, -100%);
+  display: none;
+  
 }
+
+.popup-container.show {
+  display: block;
+  opacity: 1;
+}
+
+.popup-content {
+  color: black;
+  text-align: center;
+  font-size: 14px;
+}
+.popup-container.show {
+  display: block;
+  color: black;
+}
+::ng-deep .popup-container strong{
+  color: black !important;
+}
+/* .popup-content:hover{
+  display: block;
+  font-weight: bold;
+  text-align: center;
+  color: black;
+} */

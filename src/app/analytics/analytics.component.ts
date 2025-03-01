@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import moment from "moment";
 import * as echarts from 'echarts';
 import {
   AwsReportData,
@@ -14,7 +14,7 @@ import { DataService } from '../services/service.service';
 import { catchError, map, Observable, of } from 'rxjs';
 import { DatePicker } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
-
+ 
 @Component({
   selector: 'app-analytics',
   standalone: true,
@@ -25,9 +25,9 @@ import { Select } from 'primeng/select';
 })
 export class AnalyticsComponent implements OnInit {
   loading: boolean = false;
-
+ 
   selectedStation: string = 'ECFS';
-
+ 
   selectedPeriod: string = 'dateRange';
   periodOptions = [
     { label: 'Daily', value: 'dateRange' },
@@ -35,7 +35,7 @@ export class AnalyticsComponent implements OnInit {
     { label: 'Monthly', value: 'monthRange' },
     { label: 'Yearly', value: 'yearRange' },
   ];
-
+ 
   selectedChart: string = 'line';
   chartOptions = [
     { label: 'Line Plot', value: 'line' },
@@ -43,49 +43,50 @@ export class AnalyticsComponent implements OnInit {
     { label: 'Bar Plot', value: 'bar' },
     { label: 'Polar plot', value: 'currentSpeed' },
   ];
-
+ 
   // ecfs: EcfsData[] = [];
   ecfs1: EcfsReportData[] = [];
   aws: AwsReportData[] = [];
-
+ 
   fromDate = new Date();
   toDate = new Date();
   selectedWeek = new Date();
   selectedMonth = new Date();
   selectedYear = new Date();
-
+ 
   constructor(
     private analyticsService: ReportService,
     private ser: DataService
   ) {}
-
+ 
   ngOnInit(): void {
     // this.getSensordata();
     this.onInitFetch();
   }
-
+ 
   // getSensordata() {
   //   this.analyticsService.getSensors().subscribe((data: sensors) => {
   //     this.ecfs = data.ecfs;
   //     console.log('ECFS data', this.ecfs);
   //   });
   // }
-
+ 
   selectStationoption(type: string) {
     this.selectedStation = type;
-
+ 
     if (this.selectedStation == 'ECFS') {
+      this.loading = true;
       this.Tide2();
     } else if (this.selectedStation == 'AWS') {
       this.Tide();
       this.bottompolar();
     }
   }
-
+ 
   onPeriodChange(event: any) {
     // this.selectedPeriod = event.target.value
   }
-
+ 
   // getSensordata() {
   //   this.ser.getEcfsData().subscribe((data: EcfsData[]) => {
   //     this.ecfs = data;
@@ -93,33 +94,31 @@ export class AnalyticsComponent implements OnInit {
   //     this.Tide();
   //   });
   // }
-
+ 
   private toISTISOString(date: Date): string {
     const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
     const istDate = new Date(date.getTime() + istOffset);
     return istDate.toISOString().slice(0, -1); // Remove 'Z' to avoid UTC indication
   }
-
+ 
   onInitFetch(): void {
     let formattedFromDate: string | null = null;
     let formattedToDate: string | null = null;
-
+ 
     let fromDate = this.fromDate || new Date();
     let toDate = this.toDate || new Date();
-
+ 
     this.fromDate.setHours(0, 0, 0, 0);
-
+ 
     formattedFromDate = this.toISTISOString(fromDate);
     formattedToDate = this.toISTISOString(toDate);
-
+   const date =  moment(formattedFromDate).toDate();
+console.log("formatted utc", formattedFromDate ,date);
     this.loading = true;
     this.analyticsService
-      // .getSensors('2024-01-04T03:10:00.050Z', '2024-12-31T23:59:59.999Z')
-      .getSensors(
-        '2024-01-04T01:40:00.050+05:30',
-        '2024-07-04T08:43:00.050+05:30'
-      )
+      .getSensors('2024-01-03T08:40:00.050Z', '2024-01-31T08:40:00.999Z')
       .subscribe((data: sensors) => {
+        console.log(data);
         this.ecfs1 = data.ecfs;
         this.aws = data.aws;
         if (this.selectedStation == 'ECFS') {
@@ -132,8 +131,26 @@ export class AnalyticsComponent implements OnInit {
         console.log('aws data', this.aws);
         console.log('ecfs data', this.ecfs1);
       });
-  }
 
+
+      // this.analyticsService
+      // .getSensors('2024-06-24T11:00:00.050Z', '2024-06-24T11:05:59.999Z')
+      // .subscribe((data: sensors) => {
+      //   console.log(data);
+      //   // this.ecfs1 = data.ecfs;
+      //   this.aws = data.aws;
+      //   if (this.selectedStation == 'ECFS') {
+      //     // this.bottompolar();
+      //     this.Tide2();
+      //   } else if (this.selectedStation == 'AWS') {
+      //     this.Tide();
+      //     this.bottompolar();
+      //   }
+      //   console.log('aws data', this.aws);
+      //   // console.log('ecfs data', this.ecfs1);
+      // });
+  }
+ 
   onSubmit(): void {
     const { formattedFromDate, formattedToDate } = this.periodWise();
     this.analyticsService
@@ -149,17 +166,17 @@ export class AnalyticsComponent implements OnInit {
         console.log('ecfs data on submit', this.ecfs1);
       });
   }
-
+ 
   periodWise(): {
     formattedFromDate: string | null;
     formattedToDate: string | null;
   } {
     let formattedFromDate: string | null = null;
     let formattedToDate: string | null = null;
-
+ 
     let fromDate = this.fromDate || new Date();
     let toDate = this.toDate || new Date();
-
+ 
     switch (this.selectedPeriod) {
       case 'dateRange':
         formattedFromDate = this.fromDate
@@ -169,16 +186,16 @@ export class AnalyticsComponent implements OnInit {
           ? this.toISTISOString(this.toDate)
           : this.toISTISOString(toDate);
         break;
-
+ 
       case 'weekRange':
         const startOfWeek = new Date(this.selectedWeek);
         startOfWeek.setHours(0, 0, 0, 0);
         formattedFromDate = this.toISTISOString(startOfWeek);
-
+ 
         const endofWeek = this.endOfWeek(this.selectedWeek);
         formattedToDate = this.toISTISOString(endofWeek);
         break;
-
+ 
       case 'monthRange':
         formattedFromDate = this.selectedMonth
           ? `${this.selectedMonth.getFullYear()}-${(
@@ -187,7 +204,7 @@ export class AnalyticsComponent implements OnInit {
               .toString()
               .padStart(2, '0')}-01T00:00:00`
           : null;
-
+ 
         const monthEndDate = new Date(
           this.selectedMonth.getFullYear(),
           this.selectedMonth.getMonth() + 1,
@@ -197,10 +214,10 @@ export class AnalyticsComponent implements OnInit {
           ? `${monthEndDate.toISOString().split('T')[0]}T23:59:59`
           : null;
         break;
-
+ 
       case 'yearRange':
         const year = this.selectedYear.getFullYear();
-
+ 
         formattedFromDate = `${year}-01-01T00:00:00.000Z`;
         formattedToDate = `${year}-12-31T23:59:59.000Z`;
         break;
@@ -209,26 +226,25 @@ export class AnalyticsComponent implements OnInit {
     }
     return { formattedFromDate, formattedToDate };
   }
-
+ 
   endOfWeek(startDate: Date): Date {
     let endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 6);
     endDate.setHours(23, 59, 59, 999);
     return endDate;
   }
-
   Tide(): void {
     const chartType = this.selectedChart;
     this.loading = true;
     // const tide = document.getElementById('tide');
-
+ 
     const computedStyle = getComputedStyle(document.body);
     const bgColor = computedStyle
       .getPropertyValue('--secbackground-color')
       .trim();
     const mainText = computedStyle.getPropertyValue('--chart-maintext').trim();
     const subText = computedStyle.getPropertyValue('--main-text').trim();
-
+ 
     const parameterKeys = [
       'winddir_uc',
       'ws',
@@ -249,7 +265,7 @@ export class AnalyticsComponent implements OnInit {
       'pyr2_w_bodytemp',
       'long_rad_tc',
     ];
-
+ 
     const parameterTitles: {
       [key: string]: { title: string; series: string };
     } = {
@@ -290,16 +306,16 @@ export class AnalyticsComponent implements OnInit {
       },
       long_rad_tc: { title: 'Longwave Radiation', series: 'Radiation (W/m²)' },
     };
-
+ 
     parameterKeys.forEach((key) => {
       const chartContainer = document.getElementById(`chart-${key}`);
       if (!chartContainer) return;
-
+ 
       const existingInstance = echarts.getInstanceByDom(chartContainer);
       if (existingInstance) {
         existingInstance.dispose();
       }
-
+ 
       const chartData = this.aws.map((item) => [
         new Date(item.timestamp).toLocaleString('en-GB', {
           hour: '2-digit',
@@ -309,18 +325,18 @@ export class AnalyticsComponent implements OnInit {
         }),
         (item as Record<string, any>)[key] ?? null,
       ]);
-
+ 
       console.log('chart', chartData);
-
+ 
       const chartInstance = echarts.init(chartContainer);
-
+ 
       // const waterLevels =
       //   this.selectedStation === 'cwprs01'
       //     ? this.cwprs01.map((item) => item.S1_RelativeWaterLevel)
       //     : this.selectedStation === 'cwprs02'
       //     ? this.cwprs02.map((item) => item.S1_RelativeWaterLevel)
       //     : [];
-
+ 
       // const dates =
       //   this.selectedStation === 'cwprs01'
       //     ? this.cwprs01.map(
@@ -337,14 +353,14 @@ export class AnalyticsComponent implements OnInit {
       //           }`
       //       )
       //     : [];
-
+ 
       //Without model and fetch with date and time
-
+ 
       // const dates = this.cwprs01.map(item =>`${item.Date?.split('T')[0]}`);
       //Without model and fetch with date only
-
+ 
       // Retrieve theme variables
-
+ 
       const option = {
         title: {
           text: parameterTitles[key].title
@@ -388,7 +404,7 @@ export class AnalyticsComponent implements OnInit {
             show: false, // Hide x-axis grid lines
           },
         },
-
+ 
         yAxis: {
           name: parameterTitles[key].series
             ? parameterTitles[key].series
@@ -415,7 +431,7 @@ export class AnalyticsComponent implements OnInit {
             },
           },
         },
-
+ 
         legend: {
           // type: 'scroll',
           orient: 'vertical', // Orient the legend vertically
@@ -427,7 +443,7 @@ export class AnalyticsComponent implements OnInit {
             fontSize: 14,
           },
         },
-
+ 
         toolbox: {
           // right: 10,
           feature: {
@@ -448,7 +464,7 @@ export class AnalyticsComponent implements OnInit {
             borderColor: mainText,
           },
         },
-
+ 
         dataZoom: [
           {
             type: 'slider',
@@ -465,7 +481,7 @@ export class AnalyticsComponent implements OnInit {
             moveOnMouseMove: true,
           },
         ],
-
+ 
         series: [
           {
             name: parameterTitles[key].series
@@ -480,26 +496,26 @@ export class AnalyticsComponent implements OnInit {
           },
         ],
       };
-
+ 
       chartInstance.setOption(option);
       window.addEventListener('resize', () => chartInstance.resize());
     });
-
+ 
     this.loading = false;
   }
-
+ 
   Tide2(): void {
     const chartType = this.selectedChart;
     this.loading = true;
     // const tide = document.getElementById('tide');
-
+ 
     const computedStyle = getComputedStyle(document.body);
     const bgColor = computedStyle
       .getPropertyValue('--secbackground-color')
       .trim();
     const mainText = computedStyle.getPropertyValue('--chart-maintext').trim();
     const subText = computedStyle.getPropertyValue('--main-text').trim();
-
+ 
     const parameterKeys = [
       'co2_molar_li',
       'h2o_molar_li',
@@ -537,7 +553,7 @@ export class AnalyticsComponent implements OnInit {
       'imu_gps_week_number',
       'imu_timestamp_flags',
     ];
-
+ 
     const parameterTitles: {
       [key: string]: { title: string; series: string };
     } = {
@@ -595,16 +611,16 @@ export class AnalyticsComponent implements OnInit {
         series: 'Flags (unit)',
       },
     };
-
+ 
     parameterKeys.forEach((key) => {
       const chartContainer = document.getElementById(`chart2-${key}`);
       if (!chartContainer) return;
-
+ 
       const existingInstance = echarts.getInstanceByDom(chartContainer);
       if (existingInstance) {
         existingInstance.dispose();
       }
-
+ 
       const chartData = this.ecfs1.map((item) => [
         new Date(item.timestamp).toLocaleString('en-GB', {
           hour: '2-digit',
@@ -614,18 +630,18 @@ export class AnalyticsComponent implements OnInit {
         }),
         (item as Record<string, any>)[key] ?? null,
       ]);
-
+ 
       console.log('chart', chartData);
-
+ 
       const chartInstance = echarts.init(chartContainer);
-
+ 
       // const waterLevels =
       //   this.selectedStation === 'cwprs01'
       //     ? this.cwprs01.map((item) => item.S1_RelativeWaterLevel)
       //     : this.selectedStation === 'cwprs02'
       //     ? this.cwprs02.map((item) => item.S1_RelativeWaterLevel)
       //     : [];
-
+ 
       // const dates =
       //   this.selectedStation === 'cwprs01'
       //     ? this.cwprs01.map(
@@ -642,14 +658,14 @@ export class AnalyticsComponent implements OnInit {
       //           }`
       //       )
       //     : [];
-
+ 
       //Without model and fetch with date and time
-
+ 
       // const dates = this.cwprs01.map(item =>`${item.Date?.split('T')[0]}`);
       //Without model and fetch with date only
-
+ 
       // Retrieve theme variables
-
+ 
       const option = {
         title: {
           text: parameterTitles[key].title
@@ -693,7 +709,7 @@ export class AnalyticsComponent implements OnInit {
             show: false, // Hide x-axis grid lines
           },
         },
-
+ 
         yAxis: {
           name: parameterTitles[key].series
             ? parameterTitles[key].series
@@ -720,7 +736,7 @@ export class AnalyticsComponent implements OnInit {
             },
           },
         },
-
+ 
         legend: {
           // type: 'scroll',
           orient: 'vertical', // Orient the legend vertically
@@ -732,7 +748,7 @@ export class AnalyticsComponent implements OnInit {
             fontSize: 14,
           },
         },
-
+ 
         toolbox: {
           // right: 10,
           feature: {
@@ -753,7 +769,7 @@ export class AnalyticsComponent implements OnInit {
             borderColor: mainText,
           },
         },
-
+ 
         dataZoom: [
           {
             type: 'slider',
@@ -770,7 +786,7 @@ export class AnalyticsComponent implements OnInit {
             moveOnMouseMove: true,
           },
         ],
-
+ 
         series: [
           {
             name: parameterTitles[key].series
@@ -785,19 +801,19 @@ export class AnalyticsComponent implements OnInit {
           },
         ],
       };
-
+ 
       chartInstance.setOption(option);
       window.addEventListener('resize', () => chartInstance.resize());
     });
-
+ 
     this.loading = false;
   }
-
+ 
   bottompolar(): void {
     const chartType = this.selectedChart;
     this.loading = true;
     const polar3 = document.getElementById('bottompolar')!;
-
+ 
     const computedStyle = getComputedStyle(document.body);
     const bgColor = computedStyle
       .getPropertyValue('--secbackground-color')
@@ -805,25 +821,25 @@ export class AnalyticsComponent implements OnInit {
     const mainText = computedStyle.getPropertyValue('--chart-maintext').trim();
     const subText = computedStyle.getPropertyValue('--main-text').trim();
     const text = computedStyle.getPropertyValue('--text-color').trim();
-
+ 
     // Real-time data: Fetch and parse speed and direction
     // const surfaceCurrent = this.selectedStation === 'cwprs01'
     // ? this.cwprs01.map(item => item.Lower_CurrentSpeedDirection)
     // : this.selectedStation === 'cwprs02'
     // ? this.cwprs02.map(item => item.Lower_CurrentSpeedDirection)
     // : [];
-
+ 
     const bottomPolar = this.aws.map((data) => {
       return { speed: data.ws_cc, direction: data.winddir_cc };
     });
-
+ 
     if (polar3) {
       const existingInstance = echarts.getInstanceByDom(polar3);
       if (existingInstance) {
         existingInstance.dispose();
       }
       const windRoseChart1 = echarts.init(polar3);
-
+ 
       const directionLabels = [
         'N',
         'NNE',
@@ -850,7 +866,7 @@ export class AnalyticsComponent implements OnInit {
         '6-8',
         '>8',
       ] as const;
-
+ 
       const speedColors = [
         '#0000FF',
         '#3399FF',
@@ -859,13 +875,13 @@ export class AnalyticsComponent implements OnInit {
         '#FF9933',
         '#FF3300',
       ]; // Blue to red gradient
-
+ 
       // Type for speed categories
       type SpeedCategory = (typeof speedCategories)[number];
-
+ 
       // Type for direction bins with each speed category as a key
       type DirectionBin = Record<SpeedCategory, number>;
-
+ 
       // Function to bin speeds
       function categorizeSpeed(speed: number): SpeedCategory {
         if (speed < 0.5) return '<0.5';
@@ -875,7 +891,7 @@ export class AnalyticsComponent implements OnInit {
         if (speed < 8) return '6-8';
         return '>8';
       }
-
+ 
       // Initialize bins
       const dataBins: DirectionBin[] = directionLabels.map(() => ({
         '<0.5': 0,
@@ -885,14 +901,14 @@ export class AnalyticsComponent implements OnInit {
         '6-8': 0,
         '>8': 0,
       }));
-
+ 
       // Map directions to labels and fill dataBins with counts
       bottomPolar.forEach(({ speed, direction }) => {
         const directionIndex = Math.round(direction / 22.5) % 16;
         const speedCategory = categorizeSpeed(speed);
         dataBins[directionIndex][speedCategory] += 1;
       });
-
+ 
       // Extract data for each speed category to use in series
       const seriesData = speedCategories.map((speedCategory, index) => ({
         name: speedCategory,
@@ -904,7 +920,7 @@ export class AnalyticsComponent implements OnInit {
           color: speedColors[index], // Assign color based on speed range
         },
       }));
-
+ 
       // Set up the chart options
       const option = {
         title: {
@@ -979,12 +995,12 @@ export class AnalyticsComponent implements OnInit {
         },
         series: seriesData,
       };
-
+ 
       // Render the chart and handle resizing
       windRoseChart1.setOption(option);
-
+ 
       //console.table(dataBins);
-
+ 
       this.loading = false;
       window.addEventListener('resize', () => windRoseChart1.resize());
     } else {
@@ -992,4 +1008,206 @@ export class AnalyticsComponent implements OnInit {
       this.loading = false;
     }
   }
+ 
+  // bottompolar(): void {
+  //   const chartType = this.selectedChart;
+  //   this.loading = true;
+  //   const polar3 = document.getElementById('bottompolar')!;
+ 
+  //   const computedStyle = getComputedStyle(document.body);
+  //   const bgColor = computedStyle
+  //     .getPropertyValue('--secbackground-color')
+  //     .trim();
+  //   const mainText = computedStyle.getPropertyValue('--chart-maintext').trim();
+  //   const subText = computedStyle.getPropertyValue('--main-text').trim();
+  //   const text = computedStyle.getPropertyValue('--text-color').trim();
+ 
+  //   // Real-time data: Fetch and parse speed and direction
+  //   // const surfaceCurrent = this.selectedStation === 'cwprs01'
+  //   // ? this.cwprs01.map(item => item.Lower_CurrentSpeedDirection)
+  //   // : this.selectedStation === 'cwprs02'
+  //   // ? this.cwprs02.map(item => item.Lower_CurrentSpeedDirection)
+  //   // : [];
+ 
+  //   const bottomPolar = this.aws.map((data) => {
+  //     return { speed: data.ws_cc, direction: data.winddir_cc };
+  //   });
+ 
+  //   if (polar3) {
+  //     const existingInstance = echarts.getInstanceByDom(polar3);
+  //     if (existingInstance) {
+  //       existingInstance.dispose();
+  //     }
+  //     const windRoseChart1 = echarts.init(polar3);
+ 
+  //     const directionLabels = [
+  //       'N',
+  //       'NNE',
+  //       'NE',
+  //       'ENE',
+  //       'E',
+  //       'ESE',
+  //       'SE',
+  //       'SSE',
+  //       'S',
+  //       'SSW',
+  //       'SW',
+  //       'WSW',
+  //       'W',
+  //       'WNW',
+  //       'NW',
+  //       'NNW',
+  //     ];
+  //     const speedCategories = [
+  //       '<0.5',
+  //       '0.5-2',
+  //       '2-4',
+  //       '4-6',
+  //       '6-8',
+  //       '>8',
+  //     ] as const;
+ 
+  //     const speedColors = [
+  //       '#0000FF',
+  //       '#3399FF',
+  //       '#66CCFF',
+  //       '#FFFF66',
+  //       '#FF9933',
+  //       '#FF3300',
+  //     ]; // Blue to red gradient
+ 
+  //     // Type for speed categories
+  //     type SpeedCategory = (typeof speedCategories)[number];
+ 
+  //     // Type for direction bins with each speed category as a key
+  //     type DirectionBin = Record<SpeedCategory, number>;
+ 
+  //     // Function to bin speeds
+  //     function categorizeSpeed(speed: number): SpeedCategory {
+  //       if (speed < 0.5) return '<0.5';
+  //       if (speed < 2) return '0.5-2';
+  //       if (speed < 4) return '2-4';
+  //       if (speed < 6) return '4-6';
+  //       if (speed < 8) return '6-8';
+  //       return '>8';
+  //     }
+ 
+  //     // Initialize bins
+  //     const dataBins: DirectionBin[] = directionLabels.map(() => ({
+  //       '<0.5': 0,
+  //       '0.5-2': 0,
+  //       '2-4': 0,
+  //       '4-6': 0,
+  //       '6-8': 0,
+  //       '>8': 0,
+  //     }));
+ 
+  //     // Map directions to labels and fill dataBins with counts
+  //     bottomPolar.forEach(({ speed, direction }) => {
+  //       const directionIndex = Math.round(direction / 22.5) % 16;
+  //       const speedCategory = categorizeSpeed(speed);
+  //       dataBins[directionIndex][speedCategory] += 1;
+  //     });
+ 
+  //     // Extract data for each speed category to use in series
+  //     const seriesData = speedCategories.map((speedCategory, index) => ({
+  //       name: speedCategory,
+  //       type: 'bar',
+  //       stack: 'wind-speed',
+  //       coordinateSystem: 'polar',
+  //       data: dataBins.map((bin) => bin[speedCategory]),
+  //       itemStyle: {
+  //         color: speedColors[index], // Assign color based on speed range
+  //       },
+  //     }));
+ 
+  //     // Set up the chart options
+  //     const option = {
+  //       title: {
+  //         text: 'AWS Wind Rose', // Changed from 'Surface' to 'Low'
+  //         // left: '1%',
+  //         // top: '18%',
+  //         textStyle: {
+  //           color: mainText,
+  //           fontSize: 20,
+  //         },
+  //       },
+  //       legend: {
+  //         data: speedCategories,
+  //         top: 10,
+  //         right: 0,
+  //         orient: 'vertical',
+  //         textStyle: {
+  //           color: subText, // White legend text
+  //           fontSize: 12,
+  //         },
+  //       },
+  //       polar: {},
+  //       angleAxis: {
+  //         type: 'category',
+  //         data: directionLabels,
+  //         boundaryGap: true,
+  //         startAngle: 100,
+  //         axisLabel: {
+  //           color: subText,
+  //         },
+  //         splitArea: {
+  //           show: true,
+  //           areaStyle: {
+  //             color: ['rgba(255, 255, 255, 0.1)', 'rgba(200, 200, 200, 0.1)'],
+  //           },
+  //           axisLine: {
+  //             lineStyle: {
+  //               color: subText,
+  //             },
+  //           },
+  //         },
+  //         splitLine: {
+  //           show: true,
+  //           lineStyle: {
+  //             color: subText,
+  //             type: 'solid',
+  //           },
+  //         },
+  //       },
+  //       radiusAxis: {
+  //         min: 0,
+  //         axisLine: {
+  //           lineStyle: {
+  //             color: subText, // White radius axis line
+  //           },
+  //         },
+  //         axisLabel: {
+  //           color: subText,
+  //           formatter: '{value}',
+  //         },
+  //         splitLine: {
+  //           show: true,
+  //           lineStyle: {
+  //             color: text,
+  //             type: 'dashed',
+  //           },
+  //         },
+  //       },
+  //       tooltip: {
+  //         trigger: 'item',
+  //         formatter: '{a}: {c}',
+  //       },
+  //       series: seriesData,
+  //     };
+ 
+  //     // Render the chart and handle resizing
+  //     windRoseChart1.setOption(option);
+ 
+  //     //console.table(dataBins);
+ 
+  //     this.loading = false;
+  //     window.addEventListener('resize', () => windRoseChart1.resize());
+  //   } else {
+  //     //console.error("Element with id 'rose-plot' not found");
+  //     this.loading = false;
+  //   }
+  // }
 }
+ 
+ 

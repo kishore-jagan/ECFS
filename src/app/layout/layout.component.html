@@ -2,7 +2,8 @@
     <app-sidenav></app-sidenav>
 
     <section>
-        @if(page == 'Home'){
+        <router-outlet></router-outlet>
+        <!-- @if(page == 'Home'){
             <app-home-page></app-home-page>
            
         }@else if (page == 'Dashboard') {    
@@ -14,6 +15,6 @@
             <app-analytics></app-analytics>
         }@else {
             <app-home-page></app-home-page>
-        }
+        } -->
     </section>
 </div>

@@ -23,6 +23,7 @@ import { load } from 'ol/Image';
 import { catchError, map, Observable, of } from 'rxjs';
 import { DatePicker } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
+import moment from 'moment';
 
 interface Column {
   field: string;
@@ -33,6 +34,7 @@ interface Column {
   selector: 'app-reports',
   standalone: true,
   imports: [
+    
     FormsModule,
     CommonModule,
     TableModule,
@@ -59,6 +61,7 @@ export class ReportsComponent implements OnInit {
   ];
 
   cols: Column[] = [];
+  cols2: Column[] = [];
   selectedColumns: Column[] = [];
 
   ecfs: EcfsReportData[] = [];
@@ -75,87 +78,96 @@ export class ReportsComponent implements OnInit {
   constructor(private sensorService: ReportService) {}
 
   ngOnInit(): void {
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = `
     
- ::ng-deep .p-datatable-thead{
-    margin-top: 5px;
-    margin-bottom: 5px;
-    background-color: var(--background-color) !important;
- } 
- ::ng-deep .p-multiselect-chip{
-    background-color: grey !important;
-    color: var(--main-text) !important;
- }
+    setTimeout(() => {
+      this.init()
+    }, 1);
+  }
 
- ::ng-deep .p-datatable-header{
-    background-color: var(--background-color) !important;
- }
- ::ng-deep .p-datatable-thead th{
-    background-color: var(--background-color) !important;
-    color: var(--main-text) !important;
- }
- ::ng-deep .p-datatable-tbody td{
-    background-color: var(--background-color) !important;
-    color: var(--main-text) !important;
-    border-color: rgba(174, 174, 174, 0.186) !important;
- }
-
- ::ng-deep .p-paginator{
-    background-color: var(--background-color) !important;
- }
-      ::ng-deep .multidrop{
-    max-width: 400px !important;
-    background-color: var(--background-color) !important;
-    color: var(--main-text) !important;
-  }
-  ::ng-deep .p-datatable-header{
-    border-radius: 10px 10px 0px 0px;
-  }
-      ::ng-deep p-select .p-select-label{
-    color: var(--main-text) !important;
-  }
-  ::ng-deep .p-inputtext{
-    border-radius: 15px !important;
-    background-color: black !important;
-    color: var(--main-text) !important;
-
-  }
-    `;
-    document.head.appendChild(styleElement);
-    console.log(styleElement);
-    // this.loading = false;
-    // this.getSensors().subscribe((status) => {
-    //   console.log('Sensor status:', status);
-    //   this.loading = true;
-    // });
+  init(){
     this.initializeColumns();
     this.onInitFetch();
-    // this.getSensors();
   }
 
   initializeColumns() {
     this.cols = [
       { field: 'ecfs_id', header: 'ECFS ID' },
       { field: 'timestamp', header: 'Timestamp' },
-      { field: 'record', header: 'Record' },
       { field: 'co2_molar_li', header: 'CO2 Molar' },
       { field: 'h2o_molar_li', header: 'H2O Molar' },
+      { field: 'co2_ab_li', header: 'CO2 Absorption' },
+      { field: 'h2o_ab_li', header: 'H2O Absorption' },
       { field: 'press_li', header: 'Pressure' },
       { field: 'temp_li', header: 'Temperature' },
+      { field: 'aux_li', header: 'Auxiliary Data' },
+      { field: 'cooler_volt_li', header: 'Cooler Voltage' },
+      { field: 'diagval_li', header: 'Diagnostic Value' },
+      { field: 'out_bw_li', header: 'Output Bandwidth' },
+      { field: 'pg_delay_li', header: 'Pressure Gradient Delay' },
+      { field: 'ux', header: 'Wind Velocity X' },
+      { field: 'uy', header: 'Wind Velocity Y' },
+      { field: 'uz', header: 'Wind Velocity Z' },
+      { field: 'ts', header: 'Sonic Temperature' },
+      { field: 'x_accel', header: 'Acceleration X' },
+      { field: 'y_accel', header: 'Acceleration Y' },
+      { field: 'z_accel', header: 'Acceleration Z' },
+      { field: 'x_gyro', header: 'Gyroscope X' },
+      { field: 'y_gyro', header: 'Gyroscope Y' },
+      { field: 'z_gyro', header: 'Gyroscope Z' },
+      { field: 'x_mag', header: 'Magnetic Field X' },
+      { field: 'y_mag', header: 'Magnetic Field Y' },
+      { field: 'z_mag', header: 'Magnetic Field Z' },
       { field: 'ambient_pressure', header: 'Ambient Pressure' },
       { field: 'roll', header: 'Roll' },
       { field: 'pitch', header: 'Pitch' },
       { field: 'yaw', header: 'Yaw' },
+      { field: 'quaternion_q0', header: 'Quaternion Q0' },
+      { field: 'quaternion_q1', header: 'Quaternion Q1' },
+      { field: 'quaternion_q2', header: 'Quaternion Q2' },
+      { field: 'quaternion_q3', header: 'Quaternion Q3' },
+      { field: 'imu_gps_correl_timestamp_tow', header: 'IMU-GPS Correlation' },
+      { field: 'imu_gps_week_number', header: 'IMU-GPS Week Number' },
+      { field: 'imu_timestamp_flags', header: 'IMU Timestamp Flags' },
     ];
+    
+    this.cols2 = [
+      { field: 'aws_id', header: 'AWS ID' },
+      { field: 'timestamp', header: 'Timestamp' },
+      { field: 'winddir_uc', header: 'Wind Direction (Uncorrected)' },
+      { field: 'ws', header: 'Wind Speed' },
+      { field: 'winddir_cc', header: 'Wind Direction (Corrected)' },
+      { field: 'ws_cc', header: 'Wind Speed (Corrected)' },
+      { field: 'bp', header: 'Barometric Pressure' },
+      { field: 'rh', header: 'Relative Humidity' },
+      { field: 'airtemp', header: 'Air Temperature' },
+      { field: 'dp', header: 'Dew Point' },
+      { field: 'metsens_volts', header: 'Met Sensor Voltage' },
+      { field: 'metsens_status', header: 'Met Sensor Status' },
+      { field: 'rain_mm', header: 'Rainfall (mm)' },
+      { field: 'sbtempc', header: 'Sensor Box Temperature (°C)' },
+      { field: 'targtempc', header: 'Target Temperature (°C)' },
+      { field: 'pyr1_w_irr_tc', header: 'Pyranometer 1 Irradiance (W/m²)' },
+      { field: 'pyr1_w_bodytemp', header: 'Pyranometer 1 Body Temperature' },
+      { field: 'pyr2_w_irr_tc', header: 'Pyranometer 2 Irradiance (W/m²)' },
+      { field: 'pyr2_w_bodytemp', header: 'Pyranometer 2 Body Temperature' },
+      { field: 'long_rad_tc', header: 'Longwave Radiation (W/m²)' },
+      { field: 'gps_lat', header: 'GPS Latitude' },
+      { field: 'gps_lon', header: 'GPS Longitude' },
+    ];
+    
+
     this.selectedColumns = [...this.cols];
   }
-
   selectStationoption(type: string) {
+    this.selectedColumns = [];
+    this.loading = true;
     this.selectedStation = type;
-
+    
     if (this.selectedStation == 'ECFS') {
+this.selectedColumns = [...this.cols2]
+
     } else if (this.selectedStation == 'AWS') {
+      this.selectedColumns = [...this.cols]
     }
   }
 
@@ -164,8 +176,9 @@ export class ReportsComponent implements OnInit {
   }
 
   getSensors(): Observable<boolean> {
+    
     return this.sensorService
-      .getSensors('2024-01-04T03:10:00.050Z', '2024-12-31T23:59:59.999Z')
+      .getSensors('2024-01-04T14:10:00.050Z', '2024-01-04T14:11:59.999Z')
       .pipe(
         map((data: sensors) => {
           this.ecfs = data.ecfs;
@@ -198,10 +211,15 @@ export class ReportsComponent implements OnInit {
 
     formattedFromDate = this.toISTISOString(fromDate);
     formattedToDate = this.toISTISOString(toDate);
-
+    const fDate = new Date(formattedFromDate);
+    const tDate = new Date('2024-01-04T14:11:59.999Z');
+     const date =  moment(fDate).toDate();
+     const date2 = moment(tDate).toDate();
+     console.log('Utc', date.toISOString(), date2.toISOString());
     this.loading = true;
     this.sensorService
-      .getSensors('2024-01-04T03:10:00.050Z', '2024-12-31T23:59:59.999Z')
+
+      .getSensors('2024-01-04T08:40:00.050Z', '2024-01-04T08:41:59.999Z')
       .subscribe((data: sensors) => {
         this.ecfs = data.ecfs;
         this.aws = data.aws;

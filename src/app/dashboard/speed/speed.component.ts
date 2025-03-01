@@ -59,11 +59,11 @@ export class SpeedComponent implements AfterViewInit, OnChanges {
 
   getColorForValue(value: number): string {
     if (value >= 0 && value < 1.2) {
-      return '#008000'; // Light blue for 0-12
+      return '#020c50'; // Light blue for 0-12
     } else if (value >= 1.2 && value < 2.8) {
-      return '#37a2da'; // Blue for 12-28
+      return '#020c50'; // Blue for 12-28
     } else {
-      return '#fd666d'; // Red for above 28
+      return '#020c50'; // Red for above 28
     }
   }
 

@@ -80,7 +80,7 @@ export interface sensors {
   providedIn: 'root',
 })
 export class ReportService {
-  private apiUrl = 'http://localhost:3000/api/getSensorsData';
+  private apiUrl = 'http://localhost:3000/api/getSensorsDataTest';
 
   constructor(private http: HttpClient) {}
 
@@ -91,11 +91,16 @@ export class ReportService {
       .set('fromDate', fromDate)
       .set('toDate', toDate);
 
-    return this.http.get<sensors>(this.apiUrl, { params }).pipe(
-      catchError((error) => {
-        console.error('HTTP error:', error);
-        return throwError(error);
-      })
-    );
+    return this.http
+      .get<sensors>(
+        this.apiUrl
+        // , { params }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error('HTTP error:', error);
+          return throwError(error);
+        })
+      );
   }
 }

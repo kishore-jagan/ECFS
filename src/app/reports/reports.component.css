@@ -1,5 +1,4 @@
 .reports-container{
-    /* margin: 0; */
     margin-left: 6%;
     display: flex;
     flex-direction: row;
@@ -7,25 +6,18 @@
     align-items: center;
     height: 100vh;
     width: 94%;
-    /* background-color: aliceblue; */
 }
  
 .filterContainer{
     background-color: var(--background-color);
     border-radius: 20px;
     padding: 20px;
-    /* position: sticky; */
-    /* width: 22%; */
-    /* top: 0; */
-    
-    /* min-height: 100vh; */
     height: 100vh;
     width: 19.8%;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: left;
-    /* overflow-y: auto; */
 }
  
 .filterContainer h5{
@@ -52,28 +44,8 @@
     height: 100%;
     width: 79.8%;
     
-    /* background-color: aqua; */
+    
 }
-/* @media (max-width: 1200px) {
-    .filterContainer {
-        min-height: 22%;
-        height: auto;
-    }
-}
- 
-@media (max-width: 992px) {
-    .filterContainer {
-        min-width: 30%;
-        height: auto;
-    }
-}
- 
-@media (max-width: 768px) {
-    .filterContainer {
-        min-width: 45%;
-        height: auto;
-    }
-} */
  
 .filterContainer h5{
     color: var(--main-text);
@@ -119,7 +91,6 @@ svg{
 .tableMaincon{
     height: 100vh;
     width: 100%;
-    /* max-width: 70%; */
     overflow-y: auto;
 }
  
@@ -135,7 +106,7 @@ padding: 20px;
  
 @media (max-width: 1200px) {
     .tableContainer {
-      width: 100%; /* Adjust width for smaller screens */
+      width: 100%; 
     }
   }
   
@@ -154,8 +125,6 @@ padding: 20px;
  
   label {
     margin-bottom: 10px;
-    /* font-size: 28px;     */
-    /* color: white; */
   }
  
   .periodWise{
@@ -163,7 +132,6 @@ padding: 20px;
     width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
-    /* background-color: aqua; */
   }
  
   .field{
@@ -218,7 +186,6 @@ padding: 20px;
   .headerFilter{
     width: 40%;
  
-    /* background-color: antiquewhite; */
   }
   ::ng-deep .multidrop{
     max-width: 400px !important;
@@ -264,3 +231,30 @@ padding: 20px;
  ::ng-deep .p-paginator{
     background-color: var(--background-color) !important;
  }
+
+
+
+ .loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 18px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
