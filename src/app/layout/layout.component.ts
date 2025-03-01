@@ -12,17 +12,13 @@ import { ReportsComponent } from '../reports/reports.component';
   imports: [
     RouterModule,
     SidenavComponent,
-    HomePageComponent,
-    DashboardComponent,
-    AnalyticsComponent,
-    ReportsComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
 })
 export class LayoutComponent implements OnInit {
-  page: String = '';
-
+  page: string = '';
+  tappedStation:string = '';
   constructor(private route: ActivatedRoute) {}
   ngOnInit(): void {
     //  this.route.paramMap.subscribe((params) => {
@@ -30,7 +26,7 @@ export class LayoutComponent implements OnInit {
     //  });
 
     setTimeout(() => {
-      this.page = 'Home';
+      this.page = 'Reports';
     }, 2);
   }
 }

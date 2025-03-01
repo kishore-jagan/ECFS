@@ -8,7 +8,7 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import Map from 'ol/Map';
 import { fromLonLat } from 'ol/proj';
-import { XYZ } from 'ol/source';
+import { OSM, XYZ } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
 import Fill from 'ol/style/Fill';
 import Icon from 'ol/style/Icon';
@@ -27,6 +27,7 @@ import { DatePipe } from '@angular/common';
 import Overlay from 'ol/Overlay';
 import { DirectionComponent } from './direction/direction.component';
 import { SpeedComponent } from './speed/speed.component';
+import { LayoutComponent } from '../layout/layout.component';
 
 interface listModel {
   name: string;
@@ -76,15 +77,24 @@ export class DashboardComponent implements OnInit {
 
   battery: number = 10;
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private lay:LayoutComponent) {}
 
   toggleSensor() {
+    if(this.lay.tappedStation === 'aws'){
+      this.isECFSSelected = false;
+    }else if(this.lay.tappedStation === 'ecfs'){
+      this.isECFSSelected = true;
+    }
+    
     this.sensorSelect = this.isECFSSelected ? 'ECFS' : 'AWS';
   }
   ngOnInit(): void {
+    this.toggleSensor()
     this.mapInit();
     this.getEcfsData();
     this.getAwsData();
+
+    
     console.log('ecfs:', this.ecfslastRow?.timestamp);
   }
 
@@ -92,128 +102,128 @@ export class DashboardComponent implements OnInit {
     const list = [
       {
         name: 'Ambient Pressure',
-        value: this.ecfslastRow!.ambient_pressure.toFixed(2),
+        value: this.ecfslastRow!.ambient_pressure.toFixed(2)+' hPa',
         img: '../../assets/ecfs/pressure.svg',
       },
       {
         name: 'CO2 Molar Concentration',
-        value: this.ecfslastRow!.co2_molar_li.toFixed(2),
+        value: this.ecfslastRow!.co2_molar_li.toFixed(2)+ ' ppm',
         img: '../../assets/ecfs/co2molar.svg',
       },
       {
         name: 'H2O Molar Concentration',
-        value: this.ecfslastRow!.h2o_molar_li.toFixed(2),
+        value: this.ecfslastRow!.h2o_molar_li.toFixed(2)+ ' ppt',
         img: '../../assets/ecfs/water.svg',
       },
       {
         name: 'CO2 Absorption',
-        value: this.ecfslastRow!.co2_ab_li.toFixed(2),
+        value: this.ecfslastRow!.co2_ab_li.toFixed(2)+ ' ppt',
         img: '../../assets/ecfs/co2molar.svg',
       },
       {
         name: 'H2O Absorption',
-        value: this.ecfslastRow!.h2o_ab_li.toFixed(2),
+        value: this.ecfslastRow!.h2o_ab_li.toFixed(2)+ ' ppt',
         img: '../../assets/ecfs/water.svg',
       },
       {
         name: 'Pressure',
-        value: this.ecfslastRow!.press_li.toFixed(2),
+        value: this.ecfslastRow!.press_li.toFixed(2)+ ' hPa',
         img: '../../assets/ecfs/pressure.svg',
       },
       {
         name: 'Temperature',
-        value: this.ecfslastRow!.temp_li.toFixed(2),
+        value: this.ecfslastRow!.temp_li.toFixed(2)+ ' °C',
         img: '../../assets/ecfs/temperture.svg',
       },
       {
         name: 'Auxiliary Data',
-        value: this.ecfslastRow!.aux_li.toFixed(2),
+        value: this.ecfslastRow!.aux_li.toFixed(2)+ ' V',
         img: '../../assets/ecfs/auxilarydata.svg',
       },
       {
         name: 'Wind Velocity X-Direction',
-        value: this.ecfslastRow!.ux.toFixed(2),
+        value: this.ecfslastRow!.ux.toFixed(2)+ ' m/s',
         img: '../../assets/ecfs/windsp.svg',
       },
       {
         name: 'Wind Velocity Y-Direction',
-        value: this.ecfslastRow!.uy.toFixed(2),
+        value: this.ecfslastRow!.uy.toFixed(2)+ ' m/s',
         img: '../../assets/ecfs/windsp.svg',
       },
       {
         name: 'Wind Velocity Z-Direction',
-        value: this.ecfslastRow!.uz.toFixed(2),
+        value: this.ecfslastRow!.uz.toFixed(2)+ ' m/s',
         img: '../../assets/ecfs/windsp.svg',
       },
       {
-        name: 'Sonic Temperature',
-        value: this.ecfslastRow!.ts.toFixed(2),
+        name: 'speed of sound',
+        value: this.ecfslastRow!.ts.toFixed(2)+ (' m/s'),
         img: '../../assets/ecfs/solar.svg',
       },
       {
         name: 'Acceleration X-Direction',
-        value: this.ecfslastRow!.x_accel.toFixed(2),
+        value: this.ecfslastRow!.x_accel.toFixed(2)+ (' m/s²'),
         img: '../../assets/ecfs/wind direction.svg',
       },
       {
         name: 'Acceleration Y-Direction',
-        value: this.ecfslastRow!.y_accel.toFixed(2),
+        value: this.ecfslastRow!.y_accel.toFixed(2)+ (' m/s²'),
         img: '../../assets/ecfs/wind direction.svg',
       },
       {
         name: 'Acceleration Z-Direction',
-        value: this.ecfslastRow!.z_accel.toFixed(2),
+        value: this.ecfslastRow!.z_accel.toFixed(2)+ (' m/s²'),
         img: '../../assets/ecfs/wind direction.svg',
       },
       {
         name: 'Gyroscope X-Axis',
-        value: this.ecfslastRow!.x_gyro.toFixed(2),
+        value: this.ecfslastRow!.x_gyro.toFixed(2)+ ' °/s',
         img: '../../assets/ecfs/gyroscope.svg',
       },
       {
         name: 'Gyroscope Y-Axis',
-        value: this.ecfslastRow!.y_gyro.toFixed(2),
+        value: this.ecfslastRow!.y_gyro.toFixed(2)+ ' °/s',
         img: '../../assets/ecfs/gyroscope.svg',
       },
       {
         name: 'Gyroscope Z-Axis',
-        value: this.ecfslastRow!.z_gyro.toFixed(2),
+        value: this.ecfslastRow!.z_gyro.toFixed(2)+ ' °/s',
         img: '../../assets/ecfs/gyroscope.svg',
       },
       {
         name: 'Magnetic Field X-Direction',
-        value: this.ecfslastRow!.x_mag.toFixed(2),
+        value: this.ecfslastRow!.x_mag.toFixed(2)+ ' G',
         img: '../../assets/ecfs/magnetic.svg',
       },
       {
         name: 'Magnetic Field Y-Direction',
-        value: this.ecfslastRow!.y_mag.toFixed(2),
+        value: this.ecfslastRow!.y_mag.toFixed(2)+ ' G',
         img: '../../assets/ecfs/magnetic.svg',
       },
       {
         name: 'Magnetic Field Z-Direction',
-        value: this.ecfslastRow!.z_mag.toFixed(2),
+        value: this.ecfslastRow!.z_mag.toFixed(2)+ ' G',
         img: '../../assets/ecfs/magnetic.svg',
       },
-
+ 
       {
         name: 'Roll',
-        value: this.ecfslastRow!.roll.toFixed(2),
+        value: this.ecfslastRow!.roll.toFixed(2)+ '°',
         img: '../../assets/svg/meter.svg',
       },
       {
         name: 'Pitch',
-        value: this.ecfslastRow!.pitch.toFixed(2),
+        value: this.ecfslastRow!.pitch.toFixed(2)+ ' °',
         img: '../../assets/svg/level.svg',
       },
       {
         name: 'Yaw',
-        value: this.ecfslastRow!.yaw.toFixed(2),
+        value: this.ecfslastRow!.yaw.toFixed(2)+ ' °',
         img: '../../assets/svg/o2.svg',
       },
       {
         name: 'IMU',
-        value: this.ecfslastRow!.imu_timestamp_flags.toFixed(2),
+        value: this.ecfslastRow!.imu_timestamp_flags.toFixed(2)+ ' °',
         img: '../../assets/svg/meter.svg',
       },
     ];
@@ -224,47 +234,47 @@ export class DashboardComponent implements OnInit {
     const list = [
       {
         name: 'Air Temperature',
-        value: this.awslastRow!.airtemp.toFixed(2),
+        value: this.awslastRow!.airtemp.toFixed(2)+ ' °C',
         img: '../../assets/ecfs/relativehumidity.svg',
       },
       {
         name: 'Barometric Pressure',
-        value: this.awslastRow!.bp.toFixed(2),
+        value: this.awslastRow!.bp.toFixed(2)+ ' hPa',
         img: '../../assets/ecfs/barometric.svg',
       },
       {
         name: 'Relative Humidity',
-        value: this.awslastRow!.rh.toFixed(2),
+        value: this.awslastRow!.rh.toFixed(2)+ ' %',
         img: '../../assets/ecfs/humid.svg',
       },
       {
         name: 'Wind Direction uc',
-        value: this.awslastRow!.winddir_uc.toFixed(2),
+        value: this.awslastRow!.winddir_uc.toFixed(2)+ ' °',
         img: '../../assets/ecfs/wind direction.svg',
       },
       {
         name: 'Wind Speed uc',
-        value: this.awslastRow!.ws.toFixed(2),
+        value: this.awslastRow!.ws.toFixed(2)+ ' m/s',
         img: '../../assets/ecfs/windsp.svg',
       },
       {
         name: 'Wind Dirrection cc',
-        value: this.awslastRow!.winddir_cc.toFixed(2),
+        value: this.awslastRow!.winddir_cc.toFixed(2)+ ' °',
         img: '../../assets/ecfs/wind direction.svg',
       },
       {
         name: 'Wind Speed cc',
-        value: this.awslastRow!.ws_cc.toFixed(2),
+        value: this.awslastRow!.ws_cc.toFixed(2)+ ' m/s',
         img: '../../assets/ecfs/windsp.svg',
       },
       {
         name: 'Dew Point Temperature',
-        value: this.awslastRow!.dp.toFixed(2),
+        value: this.awslastRow!.dp.toFixed(2)+ ' °C',
         img: '../../assets/ecfs/temperture.svg',
       },
       {
         name: 'Meteorological Sensor Voltage',
-        value: this.awslastRow!.metsens_volts.toFixed(2),
+        value: this.awslastRow!.metsens_volts.toFixed(2)+ ' V',
         img: '../../assets/ecfs/coolervoltage.svg',
       },
       {
@@ -274,42 +284,42 @@ export class DashboardComponent implements OnInit {
       },
       {
         name: 'Rainfall (mm)',
-        value: this.awslastRow!.rain_mm.toFixed(2),
+        value: this.awslastRow!.rain_mm.toFixed(2)+ ' mm',
         img: '../../assets/ecfs/rain.svg',
       },
       {
         name: 'Sensor Body Temperature (C)',
-        value: this.awslastRow!.sbtempc.toFixed(2),
+        value: this.awslastRow!.sbtempc.toFixed(2)+ ' °C',
         img: '../../assets/ecfs/temperture.svg',
       },
       {
         name: 'Target Temperature (C)',
-        value: this.awslastRow!.targtempc.toFixed(2),
+        value: this.awslastRow!.targtempc.toFixed(2)+ ' °C',
         img: '../../assets/ecfs/temperture.svg',
       },
       {
         name: 'Pyranometer 1 Irradiance',
-        value: this.awslastRow!.pyr1_w_irr_tc.toFixed(2),
+        value: this.awslastRow!.pyr1_w_irr_tc.toFixed(2)+ ' W/m²',
         img: '../../assets/svg/meter.svg',
       },
       {
         name: 'Pyranometer 1 Temperature',
-        value: this.awslastRow!.pyr1_w_bodytemp.toFixed(2),
+        value: this.awslastRow!.pyr1_w_bodytemp.toFixed(2)+ ' °C',
         img: '../../assets/svg/meter.svg',
       },
       {
         name: 'Pyranometer 2 Irradiance',
-        value: this.awslastRow!.pyr2_w_irr_tc.toFixed(2),
+        value: this.awslastRow!.pyr2_w_irr_tc.toFixed(2)+ ' W/m²',
         img: '../../assets/svg/level.svg',
       },
       {
         name: 'Pyranometer 2 Temperature',
-        value: this.awslastRow!.pyr2_w_bodytemp.toFixed(2),
+        value: this.awslastRow!.pyr2_w_bodytemp.toFixed(2)+ ' °C',
         img: '../../assets/svg/level.svg',
       },
       {
         name: 'Longwave Radiation',
-        value: this.awslastRow!.long_rad_tc.toFixed(2),
+        value: this.awslastRow!.long_rad_tc.toFixed(2)+ ' W/m²',
         img: '../../assets/ecfs/solar.svg',
       },
       {
@@ -326,14 +336,11 @@ export class DashboardComponent implements OnInit {
     // console.log('awslist', list);
     this.awsList = list;
   }
-
+ 
   getEcfsData() {
     this.dataService.getEcfsData().subscribe(
       (response: EcfsData[]) => {
-        this.ecfsdata = response.map((item) => ({
-          ...item,
-          value: item,
-        }));
+        this.ecfsdata = response;
         // console.log('All ecfs data', this.ecfsdata);
 
         if (this.ecfsdata.length > 0) {
@@ -381,29 +388,31 @@ export class DashboardComponent implements OnInit {
     },
     {
       name: 'AWS 2',
-      coordinates: [76.9558, 11.0168],
+      coordinates: [74.852944, 12.905056],
       description: 'Weather Station 2',
-      img: 'assets/aws/aws1.svg',
+      img: 'assets/aws/weather.svg',
     },
     {
       name: 'AWS 3',
-      coordinates: [78.7047, 10.7905],
+      coordinates: [72.86625, 19.091667],
       description: 'Weather Station 3',
-      img: 'assets/aws/aws1.svg',
+      img: 'assets/aws/weather.svg',
     },
     {
       name: 'AWS 4',
-      coordinates: [77.5946, 12.9716],
+      coordinates: [77.711278, 9.272167],
       description: 'Weather Station 4',
-      img: 'assets/aws/aws1.svg',
+      img: 'assets/aws/weather.svg',
     },
     {
       name: 'AWS 5',
-      coordinates: [78.4772, 17.4065],
+      coordinates: [80.006278, 14.442583],
       description: 'Weather Station 5',
-      img: 'assets/aws/aws1.svg',
+      img: 'assets/aws/weather.svg',
     },
   ];
+
+  
 
   mapInit() {
     const mapContainer = document.getElementById('map1');
@@ -423,6 +432,7 @@ export class DashboardComponent implements OnInit {
         new TileLayer({
           source: new XYZ({
             url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            // url: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
             // url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
             // url: 'https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
             // url: 'https://{a-c}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',

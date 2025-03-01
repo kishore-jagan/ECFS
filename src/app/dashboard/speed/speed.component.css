@@ -4,8 +4,8 @@
 } */
 
 .guages{
-    height: 250px;
-    width: 250px;
+    height: 200px;
+    width: 200px;
     /* margin-left: 5px !important; */
 }
 
@@ -18,16 +18,16 @@
 
 @media (max-width:1300px) {
     .guages{
-        height: 175px;
-        width: 175px;
+        height: 165px;
+        width: 165px;
         margin-left: 10px !important;
     }   
 }
 
 @media(max-height:700px){
     .guages{
-        height: 175px;
-        width: 175px;
+        height: 165px;
+        width: 165px;
         margin-left: 10px !important;
     }
 }

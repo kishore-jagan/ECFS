@@ -24,6 +24,8 @@ import Style from 'ol/style/Style';
 import View from 'ol/View';
 import Text from 'ol/style/Text';
 import Overlay from 'ol/Overlay';
+import { LayoutComponent } from '../layout/layout.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -42,35 +44,41 @@ export class HomePageComponent implements OnInit {
 
   @ViewChild('popupContainer', { static: false }) popupContainer!: ElementRef;
 
+  
   buoyLocations = [
     {
+      type:'ecfs',
       name: 'ECFS',
       coordinates: [82.26975, 13.00475],
       description: 'ECFS SHIP',
     },
     {
       name: 'AWS 1',
+      type:'aws',
       coordinates: [74.852944, 12.905056],
       description: 'Weather Station 2',
     },
     {
       name: 'AWS 2',
+      type:'aws',
       coordinates: [72.86625, 19.091667],
       description: 'Weather Station 3',
     },
     {
       name: 'AWS 3',
+      type:'aws',
       coordinates: [77.711278, 9.272167],
       description: 'Weather Station 4',
     },
     {
       name: 'AWS 4',
+      type:'aws',
       coordinates: [80.006278, 14.442583],
       description: 'Weather Station 5',
     },
   ];
 
-  constructor(private cdRef: ChangeDetectorRef) {
+  constructor(private cdRef: ChangeDetectorRef, private lay:LayoutComponent, private route:Router) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
@@ -95,7 +103,8 @@ export class HomePageComponent implements OnInit {
       const iconFeature = new Feature({
         geometry: new Point(fromLonLat(buoy.coordinates)),
         name: buoy.name,
-        // description: buoy.description,
+        description: buoy.description,
+        type: buoy.type,
       });
 
       let iconSrc = 'assets/aws/weather.svg';
@@ -128,6 +137,7 @@ export class HomePageComponent implements OnInit {
       layers: [
         new TileLayer({
           source: new XYZ({
+            // url: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
             url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
           }),
         }),
@@ -140,15 +150,48 @@ export class HomePageComponent implements OnInit {
     });
 
     this.map.on('click', (event) => {
-      const feature = this.map.forEachFeatureAtPixel(
-        event.pixel,
-        (feat) => feat
-      );
-
+      const feature = this.map.forEachFeatureAtPixel(event.pixel, (feat) => feat);
+    
+      if (feature) {
+        const coordinates = (feature.getGeometry() as Point).getCoordinates();
+        // this.popupContent = `<strong>${feature.get(
+        //   'name'
+        // )}</strong><br>${feature.get('type')}`;
+        const name = feature.get('type');
+    
+        console.log(name);
+        this.lay.tappedStation = name;
+        this.route.navigate(['/base/dashboard']);
+    
+        // if (!this.overlay) {
+        //   this.overlay = new Overlay({
+        //     element: this.popupContainer.nativeElement,
+        //     positioning: 'bottom-center',
+        //     stopEvent: false,
+        //   });
+        //   this.map.addOverlay(this.overlay);
+        // }
+    
+        // Show the popup
+        // this.popupContainer.nativeElement.classList.add('show');
+        // this.overlay.setPosition(coordinates);
+        this.cdRef.detectChanges();
+      } else {
+        if (this.overlay) {
+          this.overlay.setPosition(undefined);
+        }
+        // Hide the popup
+        this.popupContainer.nativeElement.classList.remove('show');
+      }
+    });
+    this.map.on('pointermove', (event) => {
+      // Get the feature under the cursor
+      const feature = this.map.forEachFeatureAtPixel(event.pixel, (feat) => feat);
+    
       if (feature) {
         const coordinates = (feature.getGeometry() as Point).getCoordinates();
         this.popupContent = `<strong>${feature.get('name')}`;
-
+    
         if (!this.overlay) {
           this.overlay = new Overlay({
             element: this.popupContainer.nativeElement,
@@ -157,14 +200,19 @@ export class HomePageComponent implements OnInit {
           });
           this.map.addOverlay(this.overlay);
         }
-
+    
+        // Show the popup
+        this.popupContainer.nativeElement.classList.add('show');
         this.overlay.setPosition(coordinates);
         this.cdRef.detectChanges();
       } else {
         if (this.overlay) {
           this.overlay.setPosition(undefined);
         }
+        // Hide the popup
+        this.popupContainer.nativeElement.classList.remove('show');
       }
     });
+    
   }
 }

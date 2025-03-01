@@ -5,12 +5,13 @@ import { LayoutComponent } from './layout/layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReportsComponent } from './reports/reports.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
+import { UsersComponent } from './users/users.component';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'base',
+    redirectTo: 'base/home',
   },
   // {
   //     path: 'home',
@@ -24,6 +25,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'reports', component: ReportsComponent },
       { path: 'analytics', component: AnalyticsComponent },
+      { path: 'users', component:UsersComponent}
     ],
   },
   { path: '**', redirectTo: 'base', pathMatch: 'full' },
