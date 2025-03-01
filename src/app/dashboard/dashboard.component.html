@@ -1,0 +1,180 @@
+<div class="dashMain">
+    <div class="column">
+        <!-- <h4>CO2_molar_li</h4> -->
+    <!-- <div class="container">
+        <div class="progress" role="progressbar" data-value="12">
+            <div class="progress-inner">
+                <div class="progress-indicator"></div>
+                <div class="progress-indicator"></div>
+            </div>
+            <span class="progress-label">
+                <strong>a</strong>
+                <span>m</span>
+            </span>
+        </div>
+    </div> -->
+
+    <div class="container">
+        <div class="imgCont">
+            <img src="../../assets/svg/leaf.svg" alt="water">
+    </div>
+        <strong>14.5</strong>
+        <span>CO2_molar_li</span>
+    </div>
+
+    <!-- <h4>H2O_molar_li</h4> -->
+    <div class="container">
+        <div class="imgCont">
+            <img src="../../assets/svg/meter.svg" alt="water">
+    </div>
+        <strong>14.5</strong>
+        <span>H2O_molar_li</span>
+    </div>
+
+    
+    <div class="container">
+        <div class="imgCont">
+            <img src="../../assets/svg/meter_fill.svg" alt="water">
+    </div>
+        <strong>14.5</strong>
+        <span>CO2_Ab_li</span>
+    </div>
+
+    
+    <div class="container">
+        <div class="imgCont">
+            <img src="../../assets/svg/o2.svg" alt="water">
+    </div>
+        <strong>14.5</strong>
+        <span>H2O_Ab_li</span>
+    </div>
+    </div>
+
+    <div class="column">
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/o2.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Pressure</span>
+        </div>
+
+      
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/meter_fill.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Temperature</span>
+        </div>
+
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/meter.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Aux</span>
+        </div> 
+        
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/leaf.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>UX</span>
+        </div>
+    </div>
+
+     <div class="column">
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/meter_fill.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Pressure</span>
+        </div>
+
+      
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/leaf.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Temperature</span>
+        </div>
+
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/o2.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Aux</span>
+        </div> 
+        
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/meter.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>UX</span>
+        </div>
+    </div>
+
+    <!-- <div class="column">
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/o2.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Pressure</span>
+        </div>
+
+      
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/meter_fill.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Temperature</span>
+        </div>
+
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/meter.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>Aux</span>
+        </div> 
+        
+        <div class="container">
+            <div class="imgCont">
+                <img src="../../assets/svg/leaf.svg" alt="water">
+        </div>
+            <strong>14.5</strong>
+            <span>UX</span>
+        </div>
+    </div> -->
+
+    <div class="column2">
+    <div class="drop">
+        <div class="location">
+            <img src="../../assets/output-onlinegiftools (1).gif" alt="location">
+            <div class="text">
+                <h6><span>Lat : </span>10.34234</h6>
+                <h6><span>Lon : </span>24.32434</h6>
+            </div>
+        </div>
+
+        <select [(ngModel)]="sensorSelect" class="dropdown">
+            <option *ngFor="let item of sensorList" [value]="item">{{item}}</option>
+        </select>
+    </div>
+           
+       
+        <div class="mapbox">
+            <div id="leaflet-map" class="map-container" style="height: 100%; width: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+
