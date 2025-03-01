@@ -15,9 +15,16 @@
         <span class="tooltip">Dashboard</span>
         </li>
         <li>
+            <a [class.selected]="isPageSelected('Reports')">
+                <i class="bx bx-grid-alt" (click)="onPageChange('Reports')"></i>
+            </a>
+            <span class="tooltip">Reports</span>
+        </li>
+        <li>
             <a [class.selected]="isPageSelected('Analytics')">
                 <i class="bx bx-globe" (click)="onPageChange('Analytics')"></i>
             </a>
+            <span class="tooltip">Analytics</span>
         </li>
     </ul>
 </div>

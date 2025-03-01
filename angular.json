@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ECFS1": {
+    "ECFS_V2": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/ecfs1",
+            "outputPath": "dist/ecfs-v2",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ECFS1:build:production"
+              "buildTarget": "ECFS_V2:build:production"
             },
             "development": {
-              "buildTarget": "ECFS1:build:development"
+              "buildTarget": "ECFS_V2:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -100,6 +100,6 @@
     }
   },
   "cli": {
-    "analytics": "0628f4bf-0bd2-4fe6-b71e-d7c7c2c17563"
+    "analytics": "58b3c020-e4c8-40af-b2e0-1c53acc96d91"
   }
 }
