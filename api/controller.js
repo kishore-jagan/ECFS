@@ -4,7 +4,7 @@ const { pool } = require('./db');
 const getEcfsData = async (req, res) => {
     try {
         // console.log("Querying database ecfs...");
-        const ecfsresult = await pool.query('SELECT * FROM ecfs_data');
+        const ecfsresult = await pool.query('SELECT * FROM ecfs_data_2');
         res.json(ecfsresult.rows);
     } catch (err){
         console.error('Error fetching ecfs data:', err);
@@ -15,7 +15,7 @@ const getEcfsData = async (req, res) => {
 const getAwsData = async (req, res) => {
     try{
     //    console.log("Querying databse aws...");
-       const awsresult = await pool.query('SELECT * FROM aws_data');
+       const awsresult = await pool.query('SELECT * FROM aws_data_2');
        res.json(awsresult.rows);
     } catch (err){
         console.error('Error fetching data aws:', err);
@@ -58,11 +58,11 @@ const getAwsData = async (req, res) => {
             console.log('Parsed toDate (UTC):', toDateObj.toISOString());
     
             const ecfsQuery = `
-                SELECT * FROM ecfs_data 
+                SELECT * FROM ecfs_data_1 
                 WHERE "timestamp" BETWEEN $1 AND $2
             `;
             const awsQuery = `
-                SELECT * FROM aws_data 
+                SELECT * FROM aws_data_2
                 WHERE "timestamp" BETWEEN $1 AND $2
             `;
 
@@ -70,8 +70,8 @@ const getAwsData = async (req, res) => {
             const awsresult = await pool.query(awsQuery, [fromDateObj, toDateObj]);
     
             res.json({
-                ecfs: ecfsresult.rows.reverse(),
-                aws: awsresult.rows.reverse()
+                ecfs: ecfsresult.rows,
+                aws: awsresult.rows
             });
         } catch (err) {
             console.error('Error fetching ecfs and aws data:', err);

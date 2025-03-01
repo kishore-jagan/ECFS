@@ -72,9 +72,18 @@
 .map-container{
     height: 100%;
     width: 100%;
-    border-radius: 10px;
+    /* border-radius: 10px; */
+    border-top-left-radius: 15px; 
+    border-bottom-left-radius: 15px;
     overflow: hidden;
 }
+
+.mapbox img {
+  width: 100%;
+  height: 100%;
+  border-top-right-radius: 15px; 
+  border-bottom-right-radius: 15px;
+} 
 
 .row2{
     margin-top: 10px;
@@ -89,17 +98,18 @@
 
 .container{
     width: 100%;
-    height: 30vh;
+    height: 28.7vh;
     display: flex;
     flex-direction: column;
     margin: 15px;
     color: #ffffff;
     /* background: linear-gradient(1455deg, #00bcd4, #0097a7, #004d40); */
-    background: linear-gradient(145deg, #00bcd4, #00c6b1, #006064);
+    /* background: linear-gradient(145deg, #00bcd4, #00c6b1, #006064); */
     /* background: linear-gradient(145deg, #00e5ff, #00e0b6, #00bfae); */
     /* background: linear-gradient(135deg, #4d8fff, #4f7c92, #6b6b6b); */
     /* background: linear-gradient(135deg, #3e5080, #484f65, #4b4d52); */
     /* background: linear-gradient(145deg, #3a9ad9, #54c5f8, #1f78c1); */
+    background: linear-gradient(145deg, #3a9ad9, #54c5f8, #1f78c1);
     /* background: linear-gradient(145deg, #a1dffb, #c1eefa, #87cdfc); */
     /* background: linear-gradient(145deg, #a56dea, #c49df2, #e4c8fa); */
     /* background: linear-gradient(135deg, #4a90e2, #357ae8, #1c5bd6); */
@@ -136,12 +146,19 @@
 }
 
 .container strong {
-    font-size: 200%;
+    font-size: 150%;
     background-color: unset;
+    
   }
   
   .container span {
     font-size: 100%;
+  }
+
+  .container img {
+  margin-top: 10px;  
+  width: 50%;
+  height: 50%; 
   }
 
   /*3d buoy style */

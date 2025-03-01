@@ -138,6 +138,6 @@ svg{
     display: flex;
     justify-content: center; 
     align-items: center;
-    flex: 1; /* Allow each chart container to grow equally */
+    flex: 1; 
     min-height: 400px; 
   }
