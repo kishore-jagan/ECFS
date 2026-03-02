@@ -34,7 +34,6 @@ interface Column {
   selector: 'app-reports',
   standalone: true,
   imports: [
-    
     FormsModule,
     CommonModule,
     TableModule,
@@ -78,13 +77,12 @@ export class ReportsComponent implements OnInit {
   constructor(private sensorService: ReportService) {}
 
   ngOnInit(): void {
-    
     setTimeout(() => {
-      this.init()
+      this.init();
     }, 1);
   }
 
-  init(){
+  init() {
     this.initializeColumns();
     this.onInitFetch();
   }
@@ -129,7 +127,7 @@ export class ReportsComponent implements OnInit {
       { field: 'imu_gps_week_number', header: 'IMU-GPS Week Number' },
       { field: 'imu_timestamp_flags', header: 'IMU Timestamp Flags' },
     ];
-    
+
     this.cols2 = [
       { field: 'aws_id', header: 'AWS ID' },
       { field: 'timestamp', header: 'Timestamp' },
@@ -154,7 +152,6 @@ export class ReportsComponent implements OnInit {
       { field: 'gps_lat', header: 'GPS Latitude' },
       { field: 'gps_lon', header: 'GPS Longitude' },
     ];
-    
 
     this.selectedColumns = [...this.cols];
   }
@@ -162,12 +159,11 @@ export class ReportsComponent implements OnInit {
     this.selectedColumns = [];
     this.loading = true;
     this.selectedStation = type;
-    
-    if (this.selectedStation == 'ECFS') {
-this.selectedColumns = [...this.cols2]
 
+    if (this.selectedStation == 'ECFS') {
+      this.selectedColumns = [...this.cols2];
     } else if (this.selectedStation == 'AWS') {
-      this.selectedColumns = [...this.cols]
+      this.selectedColumns = [...this.cols];
     }
   }
 
@@ -176,7 +172,6 @@ this.selectedColumns = [...this.cols2]
   }
 
   getSensors(): Observable<boolean> {
-    
     return this.sensorService
       .getSensors('2024-01-04T14:10:00.050Z', '2024-01-04T14:11:59.999Z')
       .pipe(
@@ -213,9 +208,9 @@ this.selectedColumns = [...this.cols2]
     formattedToDate = this.toISTISOString(toDate);
     const fDate = new Date(formattedFromDate);
     const tDate = new Date('2024-01-04T14:11:59.999Z');
-     const date =  moment(fDate).toDate();
-     const date2 = moment(tDate).toDate();
-     console.log('Utc', date.toISOString(), date2.toISOString());
+    const date = moment(fDate).toDate();
+    const date2 = moment(tDate).toDate();
+    console.log('Utc', date.toISOString(), date2.toISOString());
     this.loading = true;
     this.sensorService
 

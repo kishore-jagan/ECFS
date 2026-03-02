@@ -5,7 +5,7 @@ const pool = new Pool({
   password: 'Tridel@2025',
   host: 'localhost',
   database: 'ecfs',
-  port: 5432
+  port: 5544
 });
 
 // Connect to the PostgreSQL database

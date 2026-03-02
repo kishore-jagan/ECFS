@@ -1,170 +1,240 @@
-.analytics-container{
-    margin: 0;
-    padding-left: 6%;
-    display: flex;
-    flex-direction: row;
+.analytics-container {
+  margin: 0;
+  padding-left: 5%;
+  display: flex;
+  flex-direction: row;
 }
 
-.filterContainer{
-    background-color: var(--background-color);
-    border-radius: 20px;
-    padding: 20px;
-    position: sticky;
-    width: 22%;
-    top: 0;
-    min-height: 100vh;
-    height: 100%;
-    overflow-y: auto;
+.filterContainer {
+  background-color: var(--background-color);
+  border-radius: 20px;
+  padding: 20px;
+  position: sticky;
+  width: 22%;
+  top: 0;
+  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
 }
 
 @media (max-width: 1200px) {
-    .filterContainer {
-        min-height: 22%;
-        height: auto;
-    }
+  .filterContainer {
+    min-height: 22%;
+    height: auto;
+  }
 }
 
 @media (max-width: 992px) {
-    .filterContainer {
-        min-width: 30%;
-        height: auto;
-    }
+  .filterContainer {
+    min-width: 30%;
+    height: auto;
+  }
 }
 
 @media (max-width: 768px) {
-    .filterContainer {
-        min-width: 45%;
-        height: auto;
-    }
-}
-
-.filterContainer h5{
-    color: var(--main-text);
-    padding-bottom: 30px;
-}
-
-.sensors{
-    height: 100px;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.AWS, .ECFS{
-    height: 80px;
-    width: 80px;
-    border-radius: 10px;
-    background-color: black;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s color 0.3s;
-}
-svg{
-    height: 40px;
-    width: 40px;
-}
-.sensors h1{
-    color: rgba(255, 255, 255, 0.775);
-}
-.selectOption{
-    background-color:  rgb(73, 104, 104);;
-}
-
-
-
-
-
-
-
-.chartMaincont{
-    height: 100vh;
-    width: 100%;
-    max-width: 100%;
-    overflow-y: auto;
+  .filterContainer {
+    min-width: 45%;
+    height: auto;
   }
-  
-  /* Flex-2: Charts Layout */
-  .chartsContainer {
-    /* flex: 8.2; */
-    width: 100%;
-    max-width: 98%;
-    height: auto; 
-    overflow-y: auto; 
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    background-color: var(--background-color);
-    color: var(--main-text);
-    border-radius: 20px;
-    margin: 0px 10px 0px 10px;
-    /* padding: 20px; */
-    min-height: 100vh;
-  }
+}
 
-  @media (max-width: 1200px) {
-    .chartContainer {
-      min-width: 800px; /* Adjust width for smaller screens */
-      height: 100%;
-    }
-  }
-  
-  @media (max-width: 992px) {
-    .chartContainer {
-      min-width: 800px;
-      height: 100%;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .chartContainer {
-      min-width: 800px; /* Full width on mobile */
-      height: 100%; /* Adjust height to content */
-    }
-  }
-  
+.filterContainer h5 {
+  color: var(--main-text);
+  padding-bottom: 30px;
+}
+
+.sensors {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.AWS,
+.ECFS {
+  height: 80px;
+  width: 80px;
+  border-radius: 10px;
+  background-color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s color 0.3s;
+}
+
+svg {
+  height: 40px;
+  width: 40px;
+}
+
+.sensors h1 {
+  color: rgba(255, 255, 255, 0.775);
+}
+
+.selectOption {
+  background-color: rgb(73, 104, 104);
+  ;
+}
+
+label {
+  margin-top: 10px;
+  color: aliceblue;
+}
+
+.periodWise {
+  height: 50%;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.field {
+  width: 100%;
+  height: 20%;
+
+}
+
+.field p-select {
+  width: 100%;
+  height: 40px;
+  border-radius: 15px;
+
+  color: var(--main-text);
+  background-color: black;
+
+}
+
+::ng-deep p-select .p-select-label {
+  color: var(--main-text) !important;
+}
+
+::ng-deep .p-inputtext {
+  border-radius: 15px !important;
+  background-color: black !important;
+  color: var(--main-text) !important;
+
+}
+
+.full-width {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-button {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.field-button button {
+  height: 35px;
+  width: 60%;
+  border-radius: 10px;
+
+}
+
+
+
+
+
+.chartMaincont {
+  height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+}
+
+/* Flex-2: Charts Layout */
+.chartsContainer {
+  /* flex: 8.2; */
+  width: 100%;
+  max-width: 98%;
+  height: auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  background-color: var(--background-color);
+  color: var(--main-text);
+  border-radius: 20px;
+  margin: 0px 10px 0px 10px;
+  /* padding: 20px; */
+  min-height: 100vh;
+}
+
+@media (max-width: 1200px) {
   .chartContainer {
-    /* background-color: rgb(0, 0, 0); */
-    background-color: var(--secbackground-color);
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: var(--box-shadow);
-    margin: 20px; 
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    flex: 1; 
-    min-height: 400px; 
+    min-width: 800px;
+    /* Adjust width for smaller screens */
+    height: 100%;
   }
+}
+
+@media (max-width: 992px) {
+  .chartContainer {
+    min-width: 800px;
+    height: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .chartContainer {
+    min-width: 800px;
+    /* Full width on mobile */
+    height: 100%;
+    /* Adjust height to content */
+  }
+}
+
+.chartContainer {
+  /* background-color: rgb(0, 0, 0); */
+  background-color: var(--secbackground-color);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 400px;
+}
 
 
-  .loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    font-size: 18px;
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 18px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 5px solid rgba(255, 255, 255, 0.3);
-    border-top: 5px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+
+  100% {
+    transform: rotate(360deg);
   }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
+}

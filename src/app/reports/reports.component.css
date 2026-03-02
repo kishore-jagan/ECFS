@@ -1,240 +1,260 @@
-.reports-container{
-    margin-left: 6%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 100vh;
-    width: 94%;
+.reports-container {
+  margin-left: 4.5%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100vh;
+  width: 94%;
 }
- 
-.filterContainer{
-    background-color: var(--background-color);
-    border-radius: 20px;
-    padding: 20px;
-    height: 100vh;
-    width: 19.8%;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: left;
+
+.filterContainer {
+  background-color: var(--background-color);
+  border-radius: 20px;
+  padding: 20px;
+  height: 100vh;
+  width: 19.8%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: left;
+  margin: 10px;
 }
- 
-.filterContainer h5{
-    font-size: 22px;
-    color: var(--main-text);
+
+.filterContainer h5 {
+  font-size: 22px;
+  color: var(--main-text);
 }
-.filterContainer h3{
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--main-text);
+
+.filterContainer h3 {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--main-text);
 }
-.filterContainer label{
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--main-text);
+
+.filterContainer label {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--main-text);
 }
-.tableContainer label h5{
-    font-size: 20px;
-    font-weight:300;
-    color: var(--main-text);
+
+.tableContainer label h5 {
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--main-text);
 }
- 
-.tableee{
-    height: 100%;
-    width: 79.8%;
-    
-    
+
+.tableee {
+  height: 100%;
+  width: 79.8%;
 }
- 
-.filterContainer h5{
-    color: var(--main-text);
-    padding-bottom: 30px;
+
+.filterContainer h5 {
+  color: var(--main-text);
+  padding-bottom: 30px;
 }
- 
-.sensorssselect{
-    height: 100px;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
+
+.sensorssselect {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
 }
- 
-.AWS, .ECFS{
-    height: 80px;
-    width: 80px;
-    border-radius: 10px;
-    background-color: black;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s color 0.3s;
+
+.AWS,
+.ECFS {
+  height: 80px;
+  width: 80px;
+  border-radius: 10px;
+  background-color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s color 0.3s;
 }
-svg{
-    height: 40px;
-    width: 40px;
+
+svg {
+  height: 40px;
+  width: 40px;
 }
-.sensorssselect h1{
-    color: rgba(255, 255, 255, 0.775);
+
+.sensorssselect h1 {
+  color: rgba(255, 255, 255, 0.775);
 }
-.selectOption{
-    background-color:  rgb(73, 104, 104);;
+
+.selectOption {
+  background-color: rgb(73, 104, 104);
 }
- 
- 
- 
- 
-.tableMaincon{
-    height: 100vh;
-    width: 100%;
-    overflow-y: auto;
+
+
+
+
+.tableMaincon {
+ height: 100%;
+  width: 79.8%;
 }
- 
+
 .tableContainer {
-width: 100%;
-max-width: 100%;
-overflow-y: auto;
-background-color: var(--background-color);
-color: var(--main-text);
-border-radius: 10px 10px 10px 10px;
-padding: 20px;
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  background-color: var(--background-color);
+  color: var(--main-text);
+  border-radius: 10px 10px 10px 10px;
+  padding: 20px;
 }
- 
+
 @media (max-width: 1200px) {
-    .tableContainer {
-      width: 100%; 
-    }
-  }
-  
-  @media (max-width: 992px) {
-    .tableContainer {
-      width: 100%;
-      min-width: 700px;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .tableContainer {
-      min-width: 600px;
-    }
-  }
- 
-  label {
-    margin-bottom: 10px;
-  }
- 
-  .periodWise{
-    height: 50%;
+  .tableContainer {
     width: 100%;
-    margin-top: 20px;
-    margin-bottom: 20px;
   }
- 
-  .field{
-    width: 100%;
-    height: 20%;
- 
-  }
-  .field p-select{
-    width: 100%;
-    height: 40px;
-    border-radius: 15px;
-   
-    color: var(--main-text);
-    background-color: black;
-
-  }
-  ::ng-deep p-select .p-select-label{
-    color: var(--main-text) !important;
-  }
-  ::ng-deep .p-inputtext{
-    border-radius: 15px !important;
-    background-color: black !important;
-    color: var(--main-text) !important;
-
-  }
- 
-  .full-width{
-    display: flex;
-    flex-direction: column;
-  }
-.field-button{
-    height: 50px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
 }
-  .field-button button{
-    height: 35px;
-    width: 60%;
-    border-radius: 10px;
- 
-  }.caption{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  .multidrop{
-    width: 100% !important;
-  }
-  .headerFilter{
-    width: 40%;
- 
-  }
-  ::ng-deep .multidrop{
-    max-width: 400px !important;
-    background-color: var(--background-color) !important;
-    color: var(--main-text) !important;
-  }
-  ::ng-deep .p-datatable-header{
-    border-radius: 10px 10px 0px 0px;
-  }
-  #search input{
-    height: 40px;
-    max-width: 300px;
-    width: 200px;
-    border-radius: 6px;
-    padding-left:5px;
-    background-color: var(--background-color);
-    color: var(--main-text) !important;
- 
-  }
- ::ng-deep .p-datatable-thead{
-    margin-top: 5px;
-    margin-bottom: 5px;
-    background-color: var(--background-color) !important;
- } 
- ::ng-deep .p-multiselect-chip{
-    background-color: grey !important;
-    color: var(--main-text) !important;
- }
 
- ::ng-deep .p-datatable-header{
-    background-color: var(--background-color) !important;
- }
- ::ng-deep .p-datatable-thead th{
-    background-color: var(--background-color) !important;
-    color: var(--main-text) !important;
- }
- ::ng-deep .p-datatable-tbody td{
-    background-color: var(--background-color) !important;
-    color: var(--main-text) !important;
-    border-color: rgba(174, 174, 174, 0.186) !important;
- }
+@media (max-width: 992px) {
+  .tableContainer {
+    width: 100%;
+    min-width: 700px;
+  }
+}
 
- ::ng-deep .p-paginator{
-    background-color: var(--background-color) !important;
- }
+@media (max-width: 768px) {
+  .tableContainer {
+    min-width: 600px;
+  }
+}
+
+label {
+  margin-top: 10px;
+}
+
+.periodWise {
+  height: 50%;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.field {
+  width: 100%;
+  height: 20%;
+}
+
+.field p-select {
+  width: 100%;
+  height: 40px;
+  border-radius: 15px;
+
+  color: var(--main-text);
+  background-color: black;
+
+}
+
+::ng-deep p-select .p-select-label {
+  color: var(--main-text) !important;
+}
+
+::ng-deep .p-inputtext {
+  border-radius: 15px !important;
+  background-color: black !important;
+  color: var(--main-text) !important;
+
+}
+
+.full-width {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-button {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.field-button button {
+  height: 35px;
+  width: 60%;
+  border-radius: 10px;
+
+}
+
+.caption {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.multidrop {
+  width: 100% !important;
+}
+
+.headerFilter {
+  width: 40%;
+
+}
+
+::ng-deep .multidrop {
+  max-width: 400px !important;
+  background-color: var(--background-color) !important;
+  color: var(--main-text) !important;
+}
+
+::ng-deep .p-datatable-header {
+  border-radius: 10px 10px 0px 0px;
+}
+
+#search input {
+  height: 40px;
+  max-width: 300px;
+  width: 200px;
+  border-radius: 6px;
+  padding-left: 5px;
+  background-color: var(--background-color);
+  color: var(--main-text) !important;
+
+}
+
+::ng-deep .p-datatable-thead {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: var(--background-color) !important;
+}
+
+::ng-deep .p-multiselect-chip {
+  background-color: grey !important;
+  color: var(--main-text) !important;
+}
+
+::ng-deep .p-datatable-header {
+  background-color: var(--background-color) !important;
+}
+
+::ng-deep .p-datatable-thead th {
+  background-color: var(--background-color) !important;
+  color: var(--main-text) !important;
+}
+
+::ng-deep .p-datatable-tbody td {
+  background-color: var(--background-color) !important;
+  color: var(--main-text) !important;
+  border-color: rgba(174, 174, 174, 0.186) !important;
+}
+
+::ng-deep .p-paginator {
+  background-color: var(--background-color) !important;
+}
 
 
 
- .loading-container {
+.loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -255,6 +275,11 @@ padding: 20px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

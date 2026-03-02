@@ -1,16 +1,16 @@
-.battery-container{
+.battery-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 28px;
 }
 
-.pin{
+.pin {
     display: flex;
     flex-direction: row;
 }
 
-.plus{
+.plus {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,7 +21,7 @@
     background-color: grey;
 }
 
-.minus{
+.minus {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,42 +32,46 @@
     background-color: grey;
 }
 
-p{
+p {
     font-size: 16px;
     color: white;
-  }
+}
 
-@media (max-width: 1300px){
-    .battery-shell{
+@media (max-width: 1300px) {
+    .battery-shell {
         height: 100px !important;
         width: 15px !important;
     }
-    .plus, .minus{
+
+    .plus,
+    .minus {
         height: 6px !important;
         width: 15px !important;
     }
-}  
+}
 
 .battery-shell {
-    width: 85px;
-    height: 140px;
+    width: 75px;
+    height: 120px;
     background-color: #ddd;
     position: relative;
     display: flex;
     align-items: flex-end;
     border-radius: 5px;
-}  
+}
 
-.battery-fill{
+.battery-fill {
     width: 100%;
     animation: batteryFill 2s forwards;
     transition: height 0.5s ease;
     border-radius: 5px;
 }
+
 @keyframes batteryFill {
     from {
         height: 0;
     }
+
     to {
         height: height;
     }
